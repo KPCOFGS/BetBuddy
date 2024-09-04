@@ -2,7 +2,7 @@
 
 ## Data Source
 
-**What Website**: [Description]
+**Data Source (What Website)**: [Description]
 
 **Assigned to**: [Who will work on this]
 
