@@ -21,7 +21,7 @@ Sports Bets is a project that is aimed for better bets on sports
 
 ### Data Analysis
 
-**How to use predict bets**: [Description]
+**How to predict bets**: [Description]
 
 **Assigned to**: [Who will work on this]
 
