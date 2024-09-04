@@ -25,7 +25,7 @@ Sports Bets is a project that is aimed for better bets on sports
 ### Testings
 
 **How to valid accuracy?**: [Description]
-
+    * **Can we automate this?** 
 ### Appearance
 
 **A front-end GUI?**: [Description]
