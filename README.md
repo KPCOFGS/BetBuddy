@@ -29,6 +29,12 @@ Sports Bets is a project that is aimed for better bets on sports
 
 **A front-end GUI?**: [Description]
 
+### Optimization
+
+**Optimize Data analysis**
+
+**Polish the GUI**
+
 ## License
 
 This repository is license under the Unlicense, see [LICENSE](LICENSE) for more detail.
