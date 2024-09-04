@@ -15,10 +15,13 @@ Sports Bets is a project that is aimed for better bets on sports
 
 **Assigned to**: [Who will work on this]
 
+**How to polish the data collected**: [Description]
+
+**Assigned to**: [Who will work on this]
 
 ### Data Analysis
 
-**How to use the data effectively to achieve the expected results**: [Description]
+**How to use predict bets**: [Description]
 
 **Assigned to**: [Who will work on this]
 
