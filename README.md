@@ -8,16 +8,16 @@ Sports Bets is a project that is aimed for better bets on sports
 
 **Data Source (What Website)**: [Description]
 
-**Assigned to**: [Who will work on this]
+  **Assigned to**: [Who will work on this]
 
 
 **How To Collect Data**: [Description]
 
-**Assigned to**: [Who will work on this]
+  **Assigned to**: [Who will work on this]
 
 **How to polish the data collected**: [Description]
 
-**Assigned to**: [Who will work on this]
+  **Assigned to**: [Who will work on this]
 
 ### Data Analysis
 
