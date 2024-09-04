@@ -35,6 +35,8 @@ Sports Bets is a project that is aimed for better bets on sports
 
 **Polish the GUI**
 
+**Polish this README file**
+
 ### Documentation
 
 **How are we going to document this?**
