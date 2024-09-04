@@ -1,6 +1,6 @@
 # Sports Bets
 
-Sports Bets is a project that is aimed for better bet on sports
+Sports Bets is a project that is aimed for better bets on sports
 
 ## Data Source
 
