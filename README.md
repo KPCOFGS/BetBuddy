@@ -1,4 +1,6 @@
-# Group_One_Project
+# Sports Bets
+
+Sports Bets is a project that is aimed for better bet on sports
 
 ## Data Source
 
