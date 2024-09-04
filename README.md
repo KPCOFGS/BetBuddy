@@ -28,7 +28,7 @@ Sports Bets is a project that is aimed for better bets on sports
 
 ### Optimization
 
-**Optimize Data analysis**
+**Optimize the prediction**
 
 **Polish the GUI**
 
