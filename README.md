@@ -4,6 +4,10 @@ Sports Bets is a project that is aimed for better bets on sports
 
 ## To-Dos
 
+### How does sport bets work
+
+**Explanation**: [Description]
+
 ### Data Source
 
 1. **Data Source (What Website)**: [Description]
