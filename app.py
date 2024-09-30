@@ -1,49 +1,45 @@
-from flask import Flask, render_template, request
-import sqlite3 as sql
-app = Flask(__name__)
+import random
+from flask import Flask, get_flashed_messages, jsonify, render_template, request, session, redirect, url_for, flash
+import mysql
+import mysql.connector
+from werkzeug.security import generate_password_hash, check_password_hash
 
+import secrets
+import string
+
+app = Flask(__name__, template_folder='./templates') #MODIFY THIS AS NEEDED
+
+#Generate a random secret key
+app.secret_key = secrets.token_urlsafe(32)
+
+#Change the details below as needed to connect to the DB
+mysql_config = {
+    'host': 'HOST', 
+    'user': 'root',
+    'password': 'PW',
+    'database': 'school' 
+}
+
+con = mysql.connector.connect(**mysql_config)
+
+#---------------------------------------------------------------
+
+#Opens the Home Screen HTML file for the user
 @app.route('/')
-def home():
+def index():
+   clear_session()
    return render_template('home.html')
 
-@app.route('/enternew')
-def new_student():
-   return render_template('student.html')
+#---------------------------------------------------------------
 
-@app.route('/addrec',methods = ['POST', 'GET'])
-def addrec():
-   if request.method == 'POST':
-      try:
-         nm = request.form['Name']
-         cla = request.form['Classes']
-         maj = request.form['Major']
-         gpa = request.form['GPA']
-         
-         with sql.connect("database.db") as con:
-            cur = con.cursor()
-            
-            cur.execute("INSERT INTO students (Name,Classes,Major,GPA) VALUES (?,?,?,?)",(nm,cla,maj,gpa) )
-            
-            con.commit()
-            msg = "Record successfully added"
-      except:
-         con.rollback()
-         msg = "error in insert operation"
-      
-      finally:
-         return render_template("result.html",msg = msg)
-         con.close()
+#Define a function to clear the session
+def clear_session():
+    # Check if 'user_id' exists in the session
+    if 'user_id' in session:
+        # Clear the 'user_id' from the session
+        session.pop('user_id')
 
-@app.route('/list')
-def list():
-   con = sql.connect("database.db")
-   con.row_factory = sql.Row
-   
-   cur = con.cursor()
-   cur.execute("select * from students")
-   
-   rows = cur.fetchall();
-   return render_template("list.html",rows = rows)
+#---------------------------------------------------------------
 
 if __name__ == '__main__':
    app.run(debug = True)
