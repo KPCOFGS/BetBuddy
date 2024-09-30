@@ -17,7 +17,7 @@ mysql_config = {
     'host': 'HOST', 
     'user': 'root',
     'password': 'PW',
-    'database': 'school' 
+    'database': 'bettingBuddy' 
 }
 
 con = mysql.connector.connect(**mysql_config)
