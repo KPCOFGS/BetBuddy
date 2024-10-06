@@ -41,5 +41,46 @@ def clear_session():
 
 #---------------------------------------------------------------
 
+#opens up signup page
+'@app.route('/signup')
+def signup():
+    return render_template('signup.html')
+
+#---------------------------------------------------------------
+  
+@app.route('/signupprocess', methods = ['GET', 'POST'])
+def signupprocess():
+    if request.method == 'POST':
+
+        mydb.commit()
+        mycursor.close()
+        mydb.close()
+        return render_template('index.html')
+
+#---------------------------------------------------------------
+
+
+#opens up login page
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+#---------------------------------------------------------------
+
+
+@app.route('/loginprocess', methods = ['GET', 'POST'])
+def loginprocess():
+    if request.method == 'POST':
+
+        if query:
+            flash('Login succesful')
+            
+            return redirect('/')
+        else:
+            flash('Login unsuccesful')
+            return redirect('/login')
+
+#---------------------------------------------------------------
+
 if __name__ == '__main__':
    app.run(debug = True)
