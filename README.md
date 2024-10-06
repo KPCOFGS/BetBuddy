@@ -1,6 +1,11 @@
 # Sports Bets
 
-Sports Bets is a project that is aimed for better bets on sports
+BetBuddy is a project that is aimed for better bets on sports
+
+---
+## DBMS Setup Instructions
+- https://docs.google.com/document/d/14hmC3YLLMdfwb0MB1qjdLQnAEe5sziIs4WYAB-EqZZw/edit?usp=sharing
+---
 
 ## To-Dos
 
