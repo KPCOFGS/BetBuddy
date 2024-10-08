@@ -13,8 +13,8 @@ BetBuddy is a project that is aimed for better bets on sports
 1. Open your terminal
 2. Perform the following commands
 ```
-git clone
-cd 
+git clone https://github.com/KPCOFGS/BetBuddy.git
+cd BetBuddy
 ```
 3. Download necessary dependencies using the following command
 ```
