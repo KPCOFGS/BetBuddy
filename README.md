@@ -8,10 +8,6 @@ BetBuddy is a project that is aimed for better bets on sports
 
 **Explanation**: [Description]
 
-### Data Analysis
-
-**How to predict bets**
-
 ### Documentation
 
 **How are we going to document this**
