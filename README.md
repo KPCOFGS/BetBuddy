@@ -14,7 +14,7 @@ cd BetBuddy
 ```
 pip install -r requirements.txt
 ```
-* To download the repository without git, please follow these [instructions]() here.
+* To download the repository without git, please follow these [instructions](doc/download_without_git.md) here.
 
 ## License
 
