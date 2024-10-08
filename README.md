@@ -2,28 +2,25 @@
 
 BetBuddy is a project that is aimed for better bets on sports
 
-## To-Dos
-
-### How does sport bets work
-
-**Explanation**: [Description]
-
-### Documentation
-
-**How are we going to document this**
-
----
 ## Dependencies:
 - Flask: pip3 install Flask
----
+
 ## DBMS Setup Instructions
 - https://docs.google.com/document/d/14hmC3YLLMdfwb0MB1qjdLQnAEe5sziIs4WYAB-EqZZw/edit?usp=sharing
----
-## To run:
-- Enter the main project directory - cd into the app folder
-- python app.py
-- Go to localhost:5000/127.0.0.1:5000/whatever you prefer to view the site (as of now)
 
+## To run:
+* To download the repository with git, 
+1. Open your terminal
+2. Perform the following commands
+```
+git clone
+cd 
+```
+3. Download necessary dependencies using the following command
+```
+pip install -r requirements.txt
+```
+* To download the repository without git, please follow these [instructions]() here.
 
 ## License
 
