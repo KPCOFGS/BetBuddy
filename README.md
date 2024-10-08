@@ -8,42 +8,13 @@ BetBuddy is a project that is aimed for better bets on sports
 
 **Explanation**: [Description]
 
-### Data Source
-
-1. **Data Source (What Website)**: [Description]
-   * **Assigned to**: [Who will work on this]
-
-2. **How To Collect Data**: [Description]
-   * **Assigned to**: [Who will work on this]
-
-3. **How to polish the data collected**: [Description]
-   * **Assigned to**: [Who will work on this]
-
 ### Data Analysis
 
-**How to predict bets**: [Description]
-
-**Assigned to**: [Who will work on this]
-
-### Testings
-
-1. **How to valid accuracy?**: [Description]
-   * **Can we automate this?** 
-### Appearance
-
-**A front-end GUI?**: [Description]
-
-### Optimization
-
-**Optimize the prediction**
-
-**Polish the GUI**
-
-**Polish this README file**
+**How to predict bets**
 
 ### Documentation
 
-**How are we going to document this?**
+**How are we going to document this**
 
 ---
 ## Dependencies:
