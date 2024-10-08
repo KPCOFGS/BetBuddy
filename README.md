@@ -2,7 +2,7 @@
 
 BetBuddy is a project that is aimed for better bets on sports
 
-![BetBuddy](images/image.jpg)
+![BetBuddy](images/trophie.jpg)
 
 ## Installation:
 * To download the repository with git, 
