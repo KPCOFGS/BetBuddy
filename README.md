@@ -1,4 +1,4 @@
-# Sports Bets
+# BetBuddy
 
 BetBuddy is a project that is aimed for better bets on sports
 
