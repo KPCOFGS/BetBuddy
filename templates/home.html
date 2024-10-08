@@ -5,81 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="BetBuddy: Free Betting Tips, Strategies, and Token-Based Betting System">
     <title>BetBuddy | Free Betting Tips & Strategies</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #1a1a1a;
-            color: #f4f4f4;
-        }
-        header {
-            background-color: #0d0d0d;
-            color: #f4f4f4;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        h1 {
-            margin: 0;
-            font-size: 2.5em;
-            color: #f4f4f4;
-        }
-        .sign-in-btn {
-            background-color: #333;
-            color: #f4f4f4;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            border: 1px solid #4CAF50;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .sign-in-btn:hover {
-            background-color: #4CAF50;
-            color: #1a1a1a;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .intro {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .section {
-            background-color: #2a2a2a;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-        }
-        .section h2 {
-            font-size: 1.8em;
-            margin-bottom: 10px;
-            color: #4CAF50;
-        }
-        footer {
-            background-color: #0d0d0d;
-            color: #f4f4f4;
-            text-align: center;
-            padding: 10px 0;
-        }
-        a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        a:hover {
-            color: #66ff66;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/home.css"> <!-- Link to the CSS file -->
 </head>
 <body>
     <header>
         <h1>BetBuddy</h1>
-        <a href="#" class="sign-in-btn">Sign In</a>
+        <button id="theme-toggle" class="sign-in-btn">Toggle Dark Mode</button>
+        <a id="sign-in" class="sign-in-btn" href="sign_in.html">Sign In</a>
     </header>
 
     <div class="container">
@@ -113,11 +45,11 @@
         <p>If you or someone you know is struggling with a gambling addiction and needs help, please <a href="#">click here</a> for valuable resources and support options. Your well-being is important, and reaching out for assistance is a positive step toward recovery.</p>
     </div>
 
-
     <footer>
         <p>&copy; 2024 BetBuddy. All rights reserved.</p>
         <p>Follow us on <a href="#">Twitter</a> | <a href="#">Facebook</a> | <a href="#">Instagram</a></p>
     </footer>
+
+    <script src="../scripts/home.js"></script> <!-- Link to the JavaScript file -->
 </body>
 </html>
-
