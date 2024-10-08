@@ -2,7 +2,7 @@
 
 BetBuddy is a project that is aimed for better bets on sports
 
-## To run:
+## Installation:
 * To download the repository with git, 
 1. Open your terminal
 2. Perform the following commands
