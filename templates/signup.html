@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sign Up for BetBuddy to Get Free Betting Tips and Strategies">
     <title>BetBuddy | Sign Up</title>
-    <link rel="stylesheet" href="../static/css/signup.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}"> <!-- Dynamic CSS link -->
 </head>
 <body>
     <header>
@@ -14,7 +14,8 @@
 
     <div class="container">
         <h2>Create Your Account</h2>
-        <form action="dashboard.html" method="POST">
+        <!-- Updated form action to use Flask's url_for for dynamic URL generation -->
+        <form action="{{ url_for('signupprocess') }}" method="POST">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>
@@ -34,7 +35,12 @@
             <button type="submit" class="submit-btn">Sign Up</button>
         </form>
 
-        <p>Already have an account? <a href="sign_in.html">Sign in here</a></p>
+        <p>Already have an account? <a href="{{ url_for('login') }}">Sign in here</a></p>
+
+        <!-- Optional Back Button -->
+        <a href="{{ url_for('index') }}" class="back-btn">
+            <button type="button" class="back-btn">Back</button>
+        </a>
     </div>
 
     <footer>
@@ -42,6 +48,6 @@
         <p>Follow us on <a href="#">Twitter</a> | <a href="#">Facebook</a> | <a href="#">Instagram</a></p>
     </footer>
 
-    <script src="../scripts/home.js"></script> <!-- Link to the JavaScript file -->
+    <script src="{{ url_for('static', filename='scripts/home.js') }}"></script> <!-- Dynamic JS link -->
 </body>
 </html>
