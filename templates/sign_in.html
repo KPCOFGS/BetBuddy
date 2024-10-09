@@ -9,6 +9,21 @@
 <body>
     <div class="container">
         <h2>User Login</h2>
+
+        <!-- Display success message from signup if it exists -->
+        <div class="flash-messages">
+            {% if signup_message %}
+                <div class="alert alert-success">{{ signup_message }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Display login error message if username or password is incorrect -->
+        <div class="flash-messages">
+            {% if error_message %}
+                <div class="alert alert-danger">{{ error_message }}</div>
+            {% endif %}
+        </div>
+
         <!-- Form action updated to use Flask's url_for for dynamic URL resolution -->
         <form action="{{ url_for('loginprocess') }}" method="post">
             <label for="username">Username:</label>

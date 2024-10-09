@@ -50,20 +50,30 @@ def signupprocess():
         username = request.form['username']
         password = request.form['password']
 
-        # Hash the password before storing it
-        hashed_password = generate_password_hash(password)
-
-        # Insert user into the database
+        # Check if the username already exists
         with get_db_connection() as con:
+            cursor = con.cursor()
+            cursor.execute("SELECT * FROM Users WHERE username = ?", (username,))
+            user = cursor.fetchone()
+
+            if user:
+                flash('Username already exists. Please choose a different one.', 'error')  # 'error' category
+                return redirect(url_for('signup'))  # Redirect back to signup if username is taken
+
+            # Hash the password before storing it
+            hashed_password = generate_password_hash(password)
+
+            # Insert user into the database
             con.execute("INSERT INTO Users (username, password) VALUES (?, ?)", (username, hashed_password))
 
-        flash('Signup successful! Please log in.')
-        return redirect(url_for('login'))  # Corrected route name
+        session['signup_message'] = 'Sign Up successful! Please log in.'  # Store the signup success message
+        return redirect(url_for('login'))  # Redirect to the login page after signup
 
-# Opens the login page
 @app.route('/sign_in')
 def login():
-    return render_template('sign_in.html')
+    signup_message = session.pop('signup_message', None)  # Retrieve and remove the message from the session
+    return render_template('sign_in.html', signup_message=signup_message)  # Pass the message to the template
+
 
 @app.route('/signinprocess', methods=['POST'])
 def loginprocess():
@@ -71,17 +81,18 @@ def loginprocess():
         username = request.form['username']
         password = request.form['password']
 
+        # Check if username exists in the database
         cursor = get_db_connection().cursor()
         cursor.execute("SELECT password FROM Users WHERE username = ?", (username,))
         result = cursor.fetchone()
 
         if result and check_password_hash(result[0], password):
             session['user_id'] = username  # Store username in session
-            flash('Login successful')
             return redirect(url_for('index'))  # Redirect to home after successful login
         else:
-            flash('Login unsuccessful. Check your username and password.')
-            return redirect(url_for('login'))  # Redirect to login page
+            # Set an error message if login fails
+            error_message = 'Username or password is incorrect'
+            return render_template('sign_in.html', error_message=error_message)  # Pass error message to the template
 
 if __name__ == '__main__':
     app.run(debug=True)
