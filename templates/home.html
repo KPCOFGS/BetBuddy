@@ -11,7 +11,7 @@
     <header>
         <h1>BetBuddy</h1>
         <button id="theme-toggle" class="sign-in-btn">Toggle Dark Mode</button>
-        <a id="sign-in" class="sign-in-btn" href="sign_in.html">Sign In</a>
+        <a id="sign-in" class="sign-in-btn" href="{{ url_for('login') }}">Sign In</a>
     </header>
 
     <div class="container">
@@ -22,7 +22,7 @@
 
         <div class="section">
             <h2>Join BetBuddy Today</h2>
-            <p>Ready to start betting the smart way? <a href="signup.html">Sign up now</a> and get access to free betting tips, daily strategies, and our exclusive token-based betting platform.</p>
+            <p>Ready to start betting the smart way? <a href="{{ url_for('signup') }}">Sign up now</a> and get access to free betting tips, daily strategies, and our exclusive token-based betting platform.</p>
         </div>
 
         <div class="section">
