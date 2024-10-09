@@ -16,11 +16,11 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
             <button type="submit">Login</button>
+            <!-- Back button now links directly to the home page -->
+            <a href="{{ url_for('index') }}" class="back-btn">
+                <button type="button" class="back-btn">Back</button>
+            </a>
         </form>
-        <!-- Back button now links directly to the home page -->
-        <a href="{{ url_for('index') }}" class="back-btn">
-            <button type="button" class="back-btn">Back</button>
-        </a>
     </div>
 </body>
 </html>
