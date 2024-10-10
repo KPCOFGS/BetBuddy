@@ -25,10 +25,3 @@ python app.py
 ## License
 
 This repository is license under the Unlicense, see [LICENSE](LICENSE) for more detail.
-
-```
-May not be needed if sqlite3 gets the job done
-
-## DBMS Setup Instructions
-- https://docs.google.com/document/d/14hmC3YLLMdfwb0MB1qjdLQnAEe5sziIs4WYAB-EqZZw/edit?usp=sharing
-```
