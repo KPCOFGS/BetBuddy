@@ -1,6 +1,6 @@
 # BetBuddy
 
-A free to play sports gambling app where users can place bets using free currency 
+A free to play sports gambling app where users can place bets using virtual currency 
 
 ![BetBuddy](static/images/image1.jpg)
 
