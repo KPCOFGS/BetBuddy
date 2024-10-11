@@ -1,6 +1,6 @@
 # BetBuddy
 
-BetBuddy is a project that is aimed for better bets on sports
+A free to play sports gambling app where users can place bets using free currency 
 
 ![BetBuddy](static/images/image1.jpg)
 
