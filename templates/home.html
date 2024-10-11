@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BetBuddy: Free Betting Tips, Strategies, and Token-Based Betting System">
+    <title>BetBuddy | Free Betting Tips & Strategies</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>
+    <header>
+        <h1>BetBuddy</h1>
+        <button id="theme-toggle" class="sign-in-btn">Toggle Dark Mode</button>
+        <a id="sign-in" class="sign-in-btn" href="{{ url_for('login') }}">Sign In</a>
+    </header>
+
+    <div class="container">
+        <div class="intro">
+            <h2>Welcome to BetBuddy!</h2>
+            <p>Bet smarter with our free betting tips, strategies, and exclusive token-based betting system. No real money, just smart play.</p>
+        </div>
+
+        <div class="section">
+            <h2>Join BetBuddy Today</h2>
+            <p>Ready to start betting the smart way? <a href="{{ url_for('signup') }}">Sign up now</a> and get access to free betting tips, daily strategies, and our exclusive token-based betting platform.</p>
+        </div>
+
+        <div class="section">
+            <h2>Why BetBuddy?</h2>
+            <p>At BetBuddy, we believe in making betting fun and risk-free. Our platform provides carefully researched betting strategies, daily tips from experts, and a unique token-based betting system that lets you enjoy the thrill without the financial risks.</p>
+        </div>
+
+        <div class="section">
+            <h2>Free Betting Tips & Strategies</h2>
+            <p>Our experts analyze the latest games and matches to bring you well-researched tips and proven strategies. Whether you're a seasoned bettor or new to the game, BetBuddy has something for everyone.</p>
+        </div>
+
+        <div class="section">
+            <h2>Token-Based Betting</h2>
+            <p>Use in-game tokens to place bets, earn rewards, and climb the leaderboards. Our betting system is designed to mimic real-life betting, but without the real-life risks. It's all about strategy, knowledge, and skill!</p>
+        </div>
+
+        <div class="section">
+            <h2>Struggling with Gambling?</h2>
+            <h3>We're Here to Help</h3>
+            <p>If you or someone you know is struggling with a gambling addiction and needs help, please <a href="#">click here</a> for valuable resources and support options. Your well-being is important, and reaching out for assistance is a positive step toward recovery.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 BetBuddy. All rights reserved.</p>
+        <p>Follow us on <a href="#">Twitter</a> | <a href="#">Facebook</a> | <a href="#">Instagram</a></p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+</body>
+</html>
