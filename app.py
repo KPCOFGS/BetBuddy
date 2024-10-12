@@ -39,6 +39,10 @@ def index():
 def clear_session():
     session.pop('user_id', None)
 
+@app.route('/gambling_addiction_resources')
+def gambling_addiction_resources():
+    return render_template('ga_resources.html')
+
 # Opens the signup page
 @app.route('/signup')
 def signup():
