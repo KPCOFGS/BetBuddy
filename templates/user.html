@@ -1,1 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BetBuddy: Free Betting Tips, Strategies, and Token-Based Betting System">
+    <title>BetBuddy | Free Betting Tips & Strategies</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>
+    <header>
+        <h1>BetBuddy</h1>
+        <button id="theme-toggle" class="sign-in-btn">Toggle Dark Mode</button>
+        <a id="sign-in" class="sign-in-btn" href="{{ url_for('login') }}">Sign In</a>
+    </header>
 
+    <footer>
+        <p>&copy; 2024 BetBuddy. All rights reserved.</p>
+        <p>Follow us on <a href="#">Twitter</a> | <a href="#">Facebook</a> | <a href="#">Instagram</a></p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+</body>
+</html>
