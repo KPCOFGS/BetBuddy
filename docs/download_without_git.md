@@ -1,7 +1,7 @@
 **To download the repository without git, follow the instructions below**
 
 1. **Find the `Code` Button**:
-   - Once you're on the repository page, look for a green button that says `Code`. This button is usually located above the repository files, on the right side.
+   - Once you're on the repository page, look for a green button that says `Code`. This button is usually located above the repository files, on the right side, in green color.
 
 2. **Download as ZIP**:
    - Click on the **Code** button to open a dropdown menu.
