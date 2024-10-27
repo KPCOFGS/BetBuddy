@@ -87,6 +87,15 @@ header.dark {
     background-color: #0d0d0d; /* Dark header */
     color: #f4f4f4;
 }
+/* Dark Mode Link Styles */
+body.dark a {
+    color: #2196f3; /* Blue color */
+    text-decoration: underline; /* Optional for emphasis */
+}
+body.dark a#sign-in {
+    color: #fff; /* Yellow color for Sign In button */
+    text-decoration: none; /* Remove underline if desired */
+}
 
 .sign-in-btn.dark {
     background-color: #333;
@@ -105,4 +114,29 @@ header.dark {
 footer.dark {
     background-color: #2a2a2a; /* Dark footer */
     color: #4CAF50;
+}
+.back-button-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.back-btn {
+    background-color: #007bff; /* Primary color */
+    color: white;
+    padding: 10px 30px; /* Increased horizontal padding */
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.back-btn:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
