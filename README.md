@@ -20,7 +20,7 @@ python -m pip install -r requirements.txt
 ```
 python app.py
 ```
-* To download the repository without git, please follow these [instructions](doc/download_without_git.md) here.
+* To download the repository without git, please follow these [instructions](docs/download_without_git.md) here.
 
 ## Documentation
 * For Software Requirements, Progress Report or any other documents, please visit [docs](docs/) folder
