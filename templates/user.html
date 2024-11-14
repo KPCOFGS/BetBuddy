@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+</head>
 
+<body>
+    <header>
+        <h1>Welcome {{ username }}!</h1>
+    </header>
+
+    <div>
+        <h2> Available Sports Matches for Betting</h2>
+
+        {% if data %}
+            <h3>Available Games</h3>
+            <div>
+                {% for event in data %}
+                    <div class="match">
+                        <div class="match-header">{{ event.away_team }} @ {{ event.home_team }} &nbsp; Match Date: {{ event.match_date }}</div>
+                        <div class="match-teams">
+                           {{ event.home_team }} Price: {{ event.home_team_price }} <br>
+                           {{ event.away_team }} Price: {{ event.away_team_price }}
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No Games Available</p>
+        {% endif %}
+    </div>
+
+
+
+</body>
+
+
+</html>
