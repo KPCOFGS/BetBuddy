@@ -6,10 +6,6 @@ import pandas as pd
 from werkzeug.datastructures import Authorization
 from werkzeug.security import generate_password_hash, check_password_hash
 
-pd.set_option('display.max_columns', None)  # Show all columns
-pd.set_option('display.max_colwidth', None)  # Show full width of each column
-
-
 app = Flask(__name__, static_folder='./static')
 
 # Generate a random secret key
