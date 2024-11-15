@@ -91,5 +91,63 @@ def loginprocess():
             # Set an error message if login fails
             error_message = 'Username or password is incorrect'
             return render_template('sign_in.html', error_message=error_message)  # Pass error message to the template
+
+# User Page Navigation
+@app.route('/user/<username>')
+def UserPage(username):
+    sports_data = FetchSportsData()
+    return render_template('user.html', username=username, data=sports_data)
+
+# Pulls data from the TheOdds Api
+def FetchSportsData():
+
+    # Define Parameters
+    API_KEY = '668973ec82ed19bae55f0bd240052f2e'
+    BOOKMAKERS = 'draftkings'
+    MARKETS = 'h2h'
+    ODDS_FORMAT = 'american'
+    DATE_FORMAT = 'iso'
+    SPORT = 'americanfootball_nfl'
+
+    odds_response = requests.get(
+        f'https://api.the-odds-api.com/v4/sports/{SPORT}/odds',
+        params={
+            'api_key': API_KEY,
+            'bookmakers': BOOKMAKERS,
+            'markets': MARKETS,
+            'oddsFormat': ODDS_FORMAT,
+            'dateFormat': DATE_FORMAT,
+        }
+    )
+
+    # Return the JSON response if successful
+    if odds_response.status_code == 200:
+        data = odds_response.json()
+        print(data)
+
+        # Select data that we want and put it into a list
+        matches = [
+            {
+                'home_team': event['home_team'],
+                'away_team': event['away_team'],
+                'match_date': event['commence_time'],
+                'home_team_price': next(
+                    outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if outcome['name'] == event['home_team']),
+                'away_team_price': next(
+                    outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if outcome['name'] == event['away_team']),
+            }
+            for event in data
+        ]
+
+        print(matches)
+        print('Remaining requests', odds_response.headers['x-requests-remaining'])
+        print('Used requests', odds_response.headers['x-requests-used'])
+        return matches
+    else:
+        # Handle errors if the API request fails
+        print(f"Error fetching data: {odds_response.status_code}")
+        return None
+
+
 if __name__ == '__main__':
     app.run(debug=True)
