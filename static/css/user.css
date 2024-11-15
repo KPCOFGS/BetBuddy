@@ -24,3 +24,44 @@
 .match-teams {
     font-size: 14px;
 }
+
+.sports_tabs {
+    width: 100%;
+    background-color: #333;  /* Dark background for the tabs */
+    padding: 10px 0;          /* Add space above and below the tabs */
+    position: sticky;         /* Make the tabs sticky to the top of the page */
+    top: 0;
+    z-index: 10;              /* Ensure the tabs are above other content */
+}
+
+.sports_tabs ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;             /* Display tabs in a row */
+    justify-content: center;  /* Center the tabs horizontally */
+}
+
+.sports_tabs li {
+    margin-right: 20px;  /* Space between each tab */
+}
+
+.sports_tabs a {
+    text-decoration: none;
+    padding: 10px 15px;
+    background-color: #555;  /* Dark background for inactive tabs */
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease;  /* Smooth transition for hover effect */
+}
+
+/* Style for active tab */
+.sports_tabs a.active {
+    background-color: #007bff;  /* Blue background for active tab */
+}
+
+/* Hover effect for tabs */
+.sports_tabs a:hover {
+    background-color: #888;  /* Light gray when hovering */
+}
