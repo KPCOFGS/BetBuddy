@@ -1,9 +1,15 @@
 import sqlite3
+from operator import ifloordiv
 
+import pandas as pd
 import requests
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
+
+
+
+
 app = Flask(__name__, static_folder='./static')
 # Generate a random secret key
 app.secret_key = secrets.token_urlsafe(32)
@@ -105,7 +111,7 @@ def FetchSportsData():
 
     # Define Parameters
     API_KEY = '668973ec82ed19bae55f0bd240052f2e'
-    BOOKMAKERS = 'draftkings'
+    BOOKMAKERS = 'draftkings,fanduel,'
     MARKETS = 'h2h'
     ODDS_FORMAT = 'american'
     DATE_FORMAT = 'iso'
@@ -122,6 +128,7 @@ def FetchSportsData():
         }
     )
 
+
     # Return the JSON response if successful
     if odds_response.status_code == 200:
         data = odds_response.json()
@@ -133,10 +140,13 @@ def FetchSportsData():
                 'home_team': event['home_team'],
                 'away_team': event['away_team'],
                 'match_date': event['commence_time'],
-                #'home_team_price': next(
-                #    outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if outcome['name'] == event['home_team']),
-                #'away_team_price': next(
-                #   outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if outcome['name'] == event['away_team']),
+                'home_team_price': next(
+                   outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if
+                   outcome['name'] == event['home_team']),
+                'away_team_price': next(
+                    outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if
+                    outcome['name'] == event['away_team']),
+
             }
             for event in data
         ]
@@ -149,6 +159,8 @@ def FetchSportsData():
         # Handle errors if the API request fails
         print(f"Error fetching data: {odds_response.status_code}")
         return None
+
+
 
 
 if __name__ == '__main__':
