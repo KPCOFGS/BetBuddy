@@ -1,26 +1,74 @@
-div {
+.container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    padding: 20px;
+    width: fit-content;
+    column-gap: 20px;
 }
 
 .match {
-    border: 1px solid #ccc;
+    background-color: #fff;  /* Default background color */
+    border: 1px solid #ccc;  /* Default border */
     padding: 10px;
-    background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;  /* Smooth transition for hover */
 }
 
 
 .match-header {
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 
 .match-teams {
     font-size: 14px;
+}
+
+.match:hover {
+    transform: translateY(-5px);  /* Slightly raise the box */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  /* Stronger shadow on hover */
+    border-color: #3498db;  /* Change border color on hover */
+    cursor: pointer;  /* Change cursor to indicate it's clickable */
+}
+
+.sports_tabs {
+    width: 100%;
+    background-color: #333;  /* Dark background for the tabs */
+    padding: 10px 0;          /* Add space above and below the tabs */
+    position: sticky;         /* Make the tabs sticky to the top of the page */
+    top: 0;
+    z-index: 10;              /* Ensure the tabs are above other content */
+}
+
+.sports_tabs ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;             /* Display tabs in a row */
+    justify-content: center;  /* Center the tabs horizontally */
+}
+
+.sports_tabs li {
+    margin-right: 20px;  /* Space between each tab */
+}
+
+.sports_tabs a {
+    text-decoration: none;
+    padding: 10px 15px;
+    background-color: #555;  /* Dark background for inactive tabs */
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease;  /* Smooth transition for hover effect */
+}
+
+/* Style for active tab */
+.sports_tabs a.active {
+    background-color: #007bff;  /* Blue background for active tab */
+}
+
+/* Hover effect for tabs */
+.sports_tabs a:hover {
+    background-color: #888;  /* Light gray when hovering */
 }
