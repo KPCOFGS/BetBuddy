@@ -1,4 +1,6 @@
 import sqlite3
+
+import requests
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -86,7 +88,7 @@ def loginprocess():
 
         if result and check_password_hash(result[0], password):
             session['user_id'] = username  # Store username in session
-            return redirect(url_for('index'))  # Redirect to home after successful login
+            return redirect(url_for('UserPage', username=username))  # Redirect to user page after successful login
         else:
             # Set an error message if login fails
             error_message = 'Username or password is incorrect'
@@ -131,10 +133,10 @@ def FetchSportsData():
                 'home_team': event['home_team'],
                 'away_team': event['away_team'],
                 'match_date': event['commence_time'],
-                'home_team_price': next(
-                    outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if outcome['name'] == event['home_team']),
-                'away_team_price': next(
-                    outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if outcome['name'] == event['away_team']),
+                #'home_team_price': next(
+                #    outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if outcome['name'] == event['home_team']),
+                #'away_team_price': next(
+                #   outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if outcome['name'] == event['away_team']),
             }
             for event in data
         ]
