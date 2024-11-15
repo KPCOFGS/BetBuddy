@@ -1,0 +1,26 @@
+div {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+.match {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+
+.match-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+
+.match-teams {
+    font-size: 14px;
+}
