@@ -18,30 +18,31 @@
             <li><a href="{{ url_for('UserPage', username=username, category='NFL') }}" class="{{ 'active' if request.args.get('category') == 'NFL' else '' }}">NFL</a></li>
             <li><a href="{{ url_for('UserPage', username=username, category='NBA') }}" class="{{ 'active' if request.args.get('category') == 'NBA' else '' }}">NBA</a></li>
         </ul>
-
     </div>
 
     <div>
-        <h2> Available Sports Matches for Betting</h2>
+        <h2>Available Sports Matches for Betting</h2>
 
-        {% if data %}
-            <div class="container">
-                {% for event in data %}
-                    <div class="match">
-                        <div class="match-header">{{ event.away_team }} vs {{ event.home_team }} </div>
-                        <div class="match-teams">
-                           {{ event.home_team }} Price: {{ event.home_team_price }} <br>
-                           {{ event.away_team }} Price: {{ event.away_team_price }}
+        {% if request.args.get('category') %}
+            {% if data %}
+                <div class="container">
+                    {% for event in data %}
+                        <div class="match">
+                            <div class="match-header">{{ event.away_team }} vs {{ event.home_team }}</div>
+                            <div class="match-teams">
+                               {{ event.home_team }} Price: {{ event.home_team_price }} <br>
+                               {{ event.away_team }} Price: {{ event.away_team_price }}
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No Games Available</p>
+            {% endif %}
         {% else %}
-            <p>No Games Available</p>
+            <p>Please select a sport category to view available matches.</p>
         {% endif %}
     </div>
-
-
 
 </body>
 
