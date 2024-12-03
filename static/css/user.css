@@ -1,74 +1,138 @@
-.container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    width: fit-content;
-    column-gap: 20px;
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.match {
-    background-color: #fff;  /* Default background color */
-    border: 1px solid #ccc;  /* Default border */
-    padding: 10px;
+html, body {
+    font-family: 'Arial', sans-serif;
+    height: 100%;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Header */
+header {
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto; /* Centering the header box */
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;  /* Smooth transition for hover */
 }
 
-
-.match-header {
-    font-weight: bold;
-    margin-bottom: 20px;
+h1 {
+    font-size: 2.5rem;
+    margin: 0;
 }
 
-
-.match-teams {
-    font-size: 14px;
-}
-
-.match:hover {
-    transform: translateY(-5px);  /* Slightly raise the box */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  /* Stronger shadow on hover */
-    border-color: #3498db;  /* Change border color on hover */
-    cursor: pointer;  /* Change cursor to indicate it's clickable */
-}
-
+/* Sports Tabs */
 .sports_tabs {
-    width: 100%;
-    background-color: #333;  /* Dark background for the tabs */
-    padding: 10px 0;          /* Add space above and below the tabs */
-    position: sticky;         /* Make the tabs sticky to the top of the page */
+    padding: 10px 0;
+    position: sticky;
     top: 0;
-    z-index: 10;              /* Ensure the tabs are above other content */
+    z-index: 10;
+    margin-top: 30px; /* Add this line to increase the gap between header and sports tabs */
 }
 
 .sports_tabs ul {
-    list-style-type: none;
+    list-style: none;
+    display: flex;
+    justify-content: center;
     margin: 0;
     padding: 0;
-    display: flex;             /* Display tabs in a row */
-    justify-content: center;  /* Center the tabs horizontally */
 }
 
 .sports_tabs li {
-    margin-right: 20px;  /* Space between each tab */
+    margin: 0 15px;
 }
 
 .sports_tabs a {
-    text-decoration: none;
-    padding: 10px 15px;
-    background-color: #555;  /* Dark background for inactive tabs */
-    border-radius: 5px;
     color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #555;
+    border-radius: 5px;
     font-weight: bold;
-    transition: background-color 0.3s ease;  /* Smooth transition for hover effect */
+    transition: background-color 0.3s ease;
 }
 
-/* Style for active tab */
 .sports_tabs a.active {
-    background-color: #007bff;  /* Blue background for active tab */
+    background-color: #007bff; /* Blue for active tab */
 }
 
-/* Hover effect for tabs */
 .sports_tabs a:hover {
-    background-color: #888;  /* Light gray when hovering */
+    background-color: #888; /* Hover effect for tabs */
+}
+
+/* Matches Container */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    justify-items: center;
+}
+
+.match {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+}
+
+.match-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4CAF50; /* Green header */
+    margin-bottom: 10px;
+}
+
+.match-teams {
+    font-size: 1rem;
+    color: #333;
+}
+
+.match:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+/* Empty Data & No Category Message */
+p {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+/* Center "Available Sports Matches for Betting" */
+h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #539AFC;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .sports_tabs ul {
+        flex-direction: column;
+    }
+
+    .sports_tabs li {
+        margin: 10px 0;
+    }
+
+    .container {
+        grid-template-columns: 1fr;
+    }
 }
