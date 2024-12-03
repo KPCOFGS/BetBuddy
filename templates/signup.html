@@ -12,7 +12,6 @@
             <h1>BetBuddy</h1>
         </header>
 
-        <!-- Flash message container -->
         <div class="flash-messages">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -24,6 +23,7 @@
                 {% endif %}
             {% endwith %}
         </div>
+
         <div class="container">
             <h2>Create Your Account</h2>
             <form action="{{ url_for('signupprocess') }}" method="POST">
