@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sign_in.css') }}"> <!-- Correct link to the CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sign_in.css') }}">
 </head>
 <body>
     <div class="container">
@@ -12,9 +12,15 @@
 
         <!-- Display success message from signup if it exists -->
         <div class="flash-messages">
-            {% if signup_message %}
-                <div class="alert alert-success">{{ signup_message }}</div>
-            {% endif %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
         </div>
 
         <!-- Display login error message if username or password is incorrect -->
