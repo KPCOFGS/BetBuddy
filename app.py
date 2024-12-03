@@ -31,6 +31,7 @@ def create_tables():
             lName TEXT,
             tokenAmnt INTEGER,
             username TEXT UNIQUE,
+            email TEXT UNIQUE,
             password TEXT
         );''')
 create_tables()
@@ -62,24 +63,34 @@ def signupprocess():
             flash('Passwords do not match. Please try again.', 'error')
             return render_template('signup.html', username=username, email=email)
 
-        # Check if the username already exists
+        # Check if the username or email already exists
         with get_db_connection() as con:
             cursor = con.cursor()
-            cursor.execute("SELECT * FROM Users WHERE username = ?", (username,))
-            user = cursor.fetchone()
+            cursor.execute("SELECT 1 FROM Users WHERE username = ?", (username,))
+            user_exists = cursor.fetchone()
+            cursor.execute("SELECT 1 FROM Users WHERE email = ?", (email,))
+            email_exists = cursor.fetchone()
 
-            if user:
+            if user_exists:
                 flash('Username already exists. Please choose a different one.', 'error')
+                return render_template('signup.html', username=username, email=email)
+
+            if email_exists:
+                flash('Email already exists. Please use a different email.', 'error')
                 return render_template('signup.html', username=username, email=email)
 
             # Hash the password before storing it
             hashed_password = generate_password_hash(password)
 
             # Insert user into the database
-            con.execute("INSERT INTO Users (username, password) VALUES (?, ?)", (username, hashed_password))
+            con.execute("INSERT INTO Users (username, email, password) VALUES (?, ?, ?)",
+                        (username, email, hashed_password))
 
-        session['signup_message'] = 'Sign Up successful! Please log in.'
-        return redirect(url_for('login'))
+        # Flash success message and redirect to login page
+        flash('Sign Up successful! Please log in.', 'success')
+        return redirect(url_for('login'))  # Redirects to login page
+
+
 @app.route('/sign_in')
 def login():
     signup_message = session.pop('signup_message', None)  # Retrieve and remove the message from the session
