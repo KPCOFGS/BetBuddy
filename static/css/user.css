@@ -36,6 +36,7 @@ h1 {
     top: 0;
     z-index: 10;
     margin-top: 30px; /* Add this line to increase the gap between header and sports tabs */
+    margin-bottom: 20px;
 }
 
 .sports_tabs ul {
