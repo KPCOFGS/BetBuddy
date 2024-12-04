@@ -18,7 +18,7 @@
     <div class="currency-row">
         <div class="currency-display">
             💰 Balance: ${{ user_balance }}
-            {% if user_balance <= 0 %}
+            {% if user_balance == 0 %}
                 <p class="insufficient-funds">
                     Insufficient funds? <a href="{{ url_for('signup') }}">Reopen an account</a>
                 </p>
@@ -34,7 +34,7 @@
     </div>
 
     <div>
-        <h2>Available Sports Matches for Betting</h2>
+        <h2>Available Sports Matches</h2>
 
         {% if request.args.get('category') %}
             {% if data %}
@@ -46,7 +46,8 @@
                                {{ event.home_team }} Price: {{ event.home_team_price }} <br>
                                {{ event.away_team }} Price: {{ event.away_team_price }}
                             </div>
-                            <button class="bet-toggle">Place Bet</button>
+                            <button class="bet-toggle">Place Bet</button> <br>
+                            <div class="date"> Match Date: {{ event.match_date }} </div>
                         </div>
                     {% endfor %}
                 </div>
