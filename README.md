@@ -6,6 +6,8 @@ A free to play sports gambling app where users can place bets using virtual curr
 
 ## Screenshots:
 
+Example screenshots for what to expect from this repository
+
 ![Home Page](static/images/home_page.png)
 
 ![User Page](static/images/user.png)
