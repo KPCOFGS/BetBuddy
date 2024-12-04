@@ -11,7 +11,6 @@ html, body {
     background-color: #f4f4f4;
     color: #333;
 }
-
 /* Header */
 header {
     background-color: #4CAF50; /* Green background */
@@ -22,6 +21,71 @@ header {
     max-width: 800px;
     margin: 0 auto; /* Centering the header box */
     border-radius: 8px;
+}
+
+.header-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Currency Row - Positioning the currency display */
+.currency-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+/* Currency Display */
+.currency-display {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.insufficient-funds {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+.insufficient-funds a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* Bet Toggle Button */
+.bet-toggle {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.bet-toggle:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+/* Adjust Match Card for Bet Button */
+.match {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 h1 {
@@ -35,7 +99,7 @@ h1 {
     position: sticky;
     top: 0;
     z-index: 10;
-    margin-top: 30px; /* Add this line to increase the gap between header and sports tabs */
+    margin-top: 30px;
     margin-bottom: 20px;
 }
 
@@ -62,14 +126,12 @@ h1 {
 }
 
 .sports_tabs a.active {
-    background-color: #007bff; /* Blue for active tab */
+    background-color: #007bff;
 }
 
 .sports_tabs a:hover {
-    background-color: #888; /* Hover effect for tabs */
-}
-
-/* Matches Container */
+    background-color: #888;
+}/* Matches Container */
 .container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -123,7 +185,6 @@ h2 {
     color: #539AFC;
 }
 
-/* Mobile responsiveness */
 @media (max-width: 768px) {
     .sports_tabs ul {
         flex-direction: column;
@@ -135,5 +196,10 @@ h2 {
 
     .container {
         grid-template-columns: 1fr;
+    }
+
+    .currency-row {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
