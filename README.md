@@ -8,16 +8,16 @@ A free to play sports gambling app where users can place bets using virtual curr
 **To download the repository with `git`**
 1. Open your terminal
 2. Perform the following commands
-```
+```bash
 git clone https://github.com/KPCOFGS/BetBuddy.git
 cd BetBuddy
 ```
 3. Download necessary dependencies using the following command
-```
+```bash
 python -m pip install -r requirements.txt
 ```
 4. Run the script
-```
+```bash
 python app.py
 ```
 **To download the repository without `git`, please follow the instructions below:**
