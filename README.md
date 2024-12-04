@@ -4,6 +4,12 @@ A free to play sports gambling app where users can place bets using virtual curr
 
 ![BetBuddy](static/images/image1.jpg)
 
+## Screenshots:
+
+![Home Page](static/images/home_page.png)
+
+![User Page](static/images/user.png)
+
 ## Installation:
 **To download the repository with `git`**
 1. Open your terminal
