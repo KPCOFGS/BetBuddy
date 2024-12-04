@@ -9,7 +9,12 @@ import secrets
 
 from unicodedata import category
 from werkzeug.security import generate_password_hash, check_password_hash
+import random
+import string
 
+# Function to generate a long random string
+def generate_recovery_string():
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=64))
 
 
 
@@ -32,7 +37,8 @@ def create_tables():
             tokenAmnt INTEGER,
             username TEXT UNIQUE,
             email TEXT UNIQUE,
-            password TEXT
+            password TEXT,
+            recovery_string TEXT UNIQUE  -- Add the recovery_string column
         );''')
 create_tables()
 # Opens the Home Screen HTML file for the user
@@ -46,10 +52,11 @@ def clear_session():
 @app.route('/gambling_addiction_resources')
 def gambling_addiction_resources():
     return render_template('ga_resources.html')
-# Opens the signup page
-@app.route('/signup')
+@app.route('/signup', methods=['GET'])
 def signup():
-    return render_template('signup.html')
+    # Generate a recovery string
+    recovery_string = generate_recovery_string()
+    return render_template('signup.html', recovery_string=recovery_string)
 @app.route('/signupprocess', methods=['POST'])
 def signupprocess():
     if request.method == 'POST':
@@ -57,10 +64,11 @@ def signupprocess():
         email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm-password']
+        recovery_string = request.form['recovery_string']  # Get the recovery string from the form
 
         if password != confirm_password:
             flash('Passwords do not match. Please try again.', 'error')
-            return render_template('signup.html', username=username, email=email)
+            return render_template('signup.html', username=username, email=email, recovery_string=recovery_string)
 
         with get_db_connection() as con:
             cursor = con.cursor()
@@ -71,19 +79,22 @@ def signupprocess():
 
             if user_exists:
                 flash('Username already exists. Please choose a different one.', 'error')
-                return render_template('signup.html', username=username, email=email)
+                return render_template('signup.html', username=username, email=email, recovery_string=recovery_string)
 
             if email_exists:
                 flash('Email already exists. Please use a different email.', 'error')
-                return render_template('signup.html', username=username, email=email)
+                return render_template('signup.html', username=username, email=email, recovery_string=recovery_string)
+
+            # If you want to regenerate the recovery string only if needed
+            cursor.execute("SELECT 1 FROM Users WHERE recovery_string = ?", (recovery_string,))
+            while cursor.fetchone():  # Check if the string exists, regenerate if needed
+                recovery_string = generate_recovery_string()
+                cursor.execute("SELECT 1 FROM Users WHERE recovery_string = ?", (recovery_string,))
 
             hashed_password = generate_password_hash(password)
 
-            # Insert user with default tokenAmnt
-            con.execute(
-                "INSERT INTO Users (username, email, password, tokenAmnt) VALUES (?, ?, ?, ?)",
-                (username, email, hashed_password, 1000)  # Default currency set to 1000
-            )
+            # Insert user with the recovery string
+            con.execute("INSERT INTO Users (username, email, password, tokenAmnt, recovery_string) VALUES (?, ?, ?, ?, ?)",(username, email, hashed_password, 1000, recovery_string))
 
         flash('Sign Up successful! Please log in.', 'success')
         return redirect(url_for('login'))
@@ -198,7 +209,53 @@ def FetchSportsData(category):
         print(f"Error fetching data: {odds_response.status_code}")
         return None
 
+# Forget password page
+@app.route('/forget_password', methods=['GET', 'POST'])
+def forget_password():
+    if request.method == 'POST':
+        recovery_string = request.form['recovery_string'].strip()  # Strip leading/trailing spaces
 
+        # Check the database for the recovery string
+        with get_db_connection() as con:
+            cursor = con.cursor()
+            cursor.execute("SELECT username, password FROM Users WHERE recovery_string = ?", (recovery_string,))
+            user = cursor.fetchone()
+
+            if user:
+                # If the recovery string matches, show the reset password form
+                return render_template('display_user_info.html', username=user['username'])
+            else:
+                # If no match, show an error
+                flash('Invalid recovery string. Please try again.', 'error')
+                return render_template('forget_password.html')
+
+    return render_template('forget_password.html')
+
+# Reset password page
+@app.route('/display_user_info/<username>', methods=['GET', 'POST'])
+def reset_password(username):
+    if request.method == 'POST':
+        new_password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        # Check if passwords match
+        if new_password != confirm_password:
+            flash('Passwords do not match. Please try again.', 'error')
+            return render_template('display_user_info.html', username=username)
+
+        # Hash the new password before updating
+        hashed_password = generate_password_hash(new_password)
+
+        # Update the password in the database
+        with get_db_connection() as con:
+            cursor = con.cursor()
+            cursor.execute("UPDATE Users SET password = ? WHERE username = ?", (hashed_password, username))
+            con.commit()
+
+        flash('Your password has been reset successfully!', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('display_user_info.html', username=username)
 
 
 if __name__ == '__main__':

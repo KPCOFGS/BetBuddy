@@ -116,3 +116,25 @@ footer a:hover {
     color: #155724;
     border: 1px solid #c3e6cb;
 }
+.recovery-section {
+    background-color: #e9ecef; /* Light background color for the recovery section */
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+}
+
+.recovery-section pre {
+    background-color: #f8f9fa; /* Light background for the string */
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace; /* Monospace font for the string */
+    overflow-x: auto; /* Allows horizontal scrolling if the string is too long */
+    white-space: pre-wrap; /* Ensures long strings wrap */
+    word-wrap: break-word; /* Breaks words if necessary */
+}
+
+.recovery-section p {
+    font-weight: bold;
+    color: #007BFF;
+}

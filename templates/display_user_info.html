@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Info</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/display_user_info.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>User Information</h2>
+        <p><strong>Username:</strong> {{ username }}</p>
+        <p><strong>Password:</strong> (Hidden for security)</p>  <!-- Hide the actual password -->
+
+        <form action="{{ url_for('reset_password', username=username) }}" method="POST">
+            <div>
+                <label for="password">New Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div>
+                <label for="confirm_password">Confirm New Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit">Reset Password</button>
+        </form>
+
+        <a href="{{ url_for('index') }}" class="back-btn">
+            <button type="button" class="back-btn">Back to Login</button>
+        </a>
+    </div>
+</body>
+</html>

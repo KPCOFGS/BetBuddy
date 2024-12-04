@@ -43,6 +43,16 @@
                     <label for="confirm-password">Confirm Password:</label>
                     <input type="password" id="confirm-password" name="confirm-password" required>
                 </div>
+
+                <div class="form-group recovery-section">
+                    <p><strong>The recovery string, in case you forget your account, is:</strong></p>
+                    <pre>{{ recovery_string }}</pre>
+                    <p><strong>Please store this recovery string in a safe place</strong></p>
+                </div>
+
+                <!-- Hidden input for recovery_string -->
+                <input type="hidden" name="recovery_string" value="{{ recovery_string }}">
+
                 <button type="submit" class="submit-btn">Sign Up</button>
             </form>
 
