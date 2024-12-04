@@ -58,12 +58,10 @@ def signupprocess():
         password = request.form['password']
         confirm_password = request.form['confirm-password']
 
-        # Check if passwords match
         if password != confirm_password:
             flash('Passwords do not match. Please try again.', 'error')
             return render_template('signup.html', username=username, email=email)
 
-        # Check if the username or email already exists
         with get_db_connection() as con:
             cursor = con.cursor()
             cursor.execute("SELECT 1 FROM Users WHERE username = ?", (username,))
@@ -79,16 +77,16 @@ def signupprocess():
                 flash('Email already exists. Please use a different email.', 'error')
                 return render_template('signup.html', username=username, email=email)
 
-            # Hash the password before storing it
             hashed_password = generate_password_hash(password)
 
-            # Insert user into the database
-            con.execute("INSERT INTO Users (username, email, password) VALUES (?, ?, ?)",
-                        (username, email, hashed_password))
+            # Insert user with default tokenAmnt
+            con.execute(
+                "INSERT INTO Users (username, email, password, tokenAmnt) VALUES (?, ?, ?, ?)",
+                (username, email, hashed_password, 1000)  # Default currency set to 1000
+            )
 
-        # Flash success message and redirect to login page
         flash('Sign Up successful! Please log in.', 'success')
-        return redirect(url_for('login'))  # Redirects to login page
+        return redirect(url_for('login'))
 
 
 @app.route('/sign_in')
@@ -119,7 +117,17 @@ def loginprocess():
 def UserPage(username):
     category = request.args.get('category')
 
-    #Code so a pull request isn't used on every tab switch
+    # Retrieve user's balance from the database
+    with get_db_connection() as con:
+        cursor = con.cursor()
+        cursor.execute("SELECT tokenAmnt FROM Users WHERE username = ?", (username,))
+        result = cursor.fetchone()
+        if result:
+            user_balance = result['tokenAmnt']
+        else:
+            user_balance = 0  # Default to 0 if no balance is found
+
+    # Fetch sports data if the category is specified
     if category not in session:
         sports_data = FetchSportsData(category)
         if sports_data:
@@ -127,7 +135,8 @@ def UserPage(username):
     else:
         sports_data = session[category]
 
-    return render_template('user.html', username=username, data=sports_data)
+    # Pass user_balance and other data to the template
+    return render_template('user.html', username=username, user_balance=user_balance, data=sports_data)
 
 # Pulls data from the TheOdds Api
 def FetchSportsData(category):
