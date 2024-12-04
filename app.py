@@ -1,4 +1,5 @@
 import sqlite3
+from asyncio import current_task
 from operator import ifloordiv
 from zoneinfo import available_timezones
 
@@ -6,6 +7,7 @@ import pandas as pd
 import requests
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 import secrets
+from datetime import datetime
 
 from unicodedata import category
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -154,7 +156,7 @@ def FetchSportsData(category):
 
     # Define Parameters
     API_KEY = '668973ec82ed19bae55f0bd240052f2e'
-    BOOKMAKERS = 'draftkings,fanduel,'
+    BOOKMAKERS = 'draftkings'
     MARKETS = 'h2h'
     ODDS_FORMAT = 'american'
     DATE_FORMAT = 'iso'
@@ -183,22 +185,57 @@ def FetchSportsData(category):
         data = odds_response.json()
         print(data)
 
-        # Select data that we want and put it into a list
-        matches = [
-            {
-                'home_team': event['home_team'],
-                'away_team': event['away_team'],
-                'match_date': event['commence_time'],
-                'home_team_price': next(
-                   outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if
-                   outcome['name'] == event['home_team']),
-                'away_team_price': next(
-                    outcome['price'] for outcome in event['bookmakers'][0]['markets'][0]['outcomes'] if
-                    outcome['name'] == event['away_team']),
+        current_date = datetime.utcnow().date()
+        matches = []
+        for event in data:
+            try:
+                # Validate bookmakers
+                bookmakers = event.get('bookmakers', [])
+                if not bookmakers:
+                    continue
 
-            }
-            for event in data
-        ]
+                # Validate markets
+                markets = bookmakers[0].get('markets', [])
+                if not markets:
+                    continue
+
+                # Validate outcomes
+                outcomes = markets[0].get('outcomes', [])
+                if not outcomes:
+                    continue
+
+                # Extract home and away prices
+                home_team_price = next(
+                    (outcome['price'] for outcome in outcomes if outcome['name'] == event['home_team']), None
+                )
+                away_team_price = next(
+                    (outcome['price'] for outcome in outcomes if outcome['name'] == event['away_team']), None
+                )
+
+                if home_team_price is None or away_team_price is None:
+                    continue
+
+                # Grab commence time
+                match_date = event.get('commence_time')
+                if match_date:
+                   match_date = datetime.fromisoformat(match_date.replace('Z', '+00:00')).date()
+                   print('Match Date: ', match_date)
+                   print('Current Date: ', current_date)
+
+                #if match_date != current_date:
+                #    continue
+
+                # Add match data
+                matches.append({
+                    'home_team': event['home_team'],
+                    'away_team': event['away_team'],
+                    'match_date': match_date,
+                    'home_team_price': home_team_price,
+                    'away_team_price': away_team_price,
+                })
+            except (KeyError, IndexError) as e:
+                print(f"Error processing event: {event}. Error: {e}")
+                continue
 
         print(matches)
         print('Remaining requests', odds_response.headers['x-requests-remaining'])
