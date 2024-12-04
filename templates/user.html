@@ -8,10 +8,23 @@
 </head>
 
 <body>
-
     <header>
-        <h1>Welcome {{ username }}!</h1>
+        <div class="header-content">
+            <h1>Welcome {{ username }}!</h1>
+        </div>
     </header>
+
+    <!-- Add the currency display in a separate div, outside the header but in the same row -->
+    <div class="currency-row">
+        <div class="currency-display">
+            💰 Balance: ${{ user_balance }}
+            {% if user_balance <= 0 %}
+                <p class="insufficient-funds">
+                    Insufficient funds? <a href="{{ url_for('signup') }}">Reopen an account</a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
 
     <div class="sports_tabs">
         <ul>
@@ -33,6 +46,7 @@
                                {{ event.home_team }} Price: {{ event.home_team_price }} <br>
                                {{ event.away_team }} Price: {{ event.away_team_price }}
                             </div>
+                            <button class="bet-toggle">Place Bet</button>
                         </div>
                     {% endfor %}
                 </div>
@@ -43,7 +57,5 @@
             <p>Please select a sport category to view available matches.</p>
         {% endif %}
     </div>
-
 </body>
-
 </html>
