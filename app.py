@@ -3,6 +3,7 @@ from asyncio import current_task
 from operator import ifloordiv
 from zoneinfo import available_timezones
 
+import pandas as pd
 import requests
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 import secrets
@@ -121,7 +122,7 @@ def signupprocess():
                 recovery_string = generate_recovery_string()
                 cursor.execute("SELECT 1 FROM Users WHERE recovery_string = ?", (recovery_string,))
 
-            hashed_password = generate_password_hash(password)
+            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
             # Insert user with the recovery string
             con.execute("INSERT INTO Users (username, password, tokenAmnt, recovery_string) VALUES (?, ?, ?, ?)",(username, hashed_password, 1000, recovery_string))
@@ -309,7 +310,7 @@ def reset_password(username):
             return render_template('display_user_info.html', username=username)
 
         # Hash the new password before updating
-        hashed_password = generate_password_hash(new_password)
+        hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256')
 
         # Update the password in the database
         with get_db_connection() as con:
@@ -342,22 +343,19 @@ def place_bet():
             user_balance = cursor.fetchone()
 
             if user_balance and user_balance['tokenAmnt'] >= bet_amount:
-                # Determine the odds based on the selected team
-                if team == request.form['home_team']:  # If the user selected the home team
+                if team == request.form['home_team']:
                     odds = home_odds
-                elif team == request.form['away_team']:  # If the user selected the away team
+                elif team == request.form['away_team']:
                     odds = away_odds
                 else:
                     flash('Invalid team selection.', 'error')
                     return redirect(url_for('UserPage', username=user_id))
 
-                # Calculate potential payout based on American odds
                 if odds > 0:  # Positive odds
                     potential_payout = bet_amount * (odds / 100)
                 else:  # Negative odds
                     potential_payout = bet_amount * (100 / abs(odds))
 
-                # Insert the bet into the Bets table
                 cursor.execute('''
                     INSERT INTO Bets (userID, matchID, team, amount, odds, potential_payout)
                     VALUES (
@@ -365,7 +363,6 @@ def place_bet():
                         ?, ?, ?, ?, ?
                     )''', (user_id, match_id, team, bet_amount, odds, potential_payout))
 
-                # Deduct the bet amount from the user's balance
                 cursor.execute("UPDATE Users SET tokenAmnt = tokenAmnt - ? WHERE username = ?", (bet_amount, user_id))
                 con.commit()
 
@@ -375,7 +372,6 @@ def place_bet():
                 flash('Insufficient funds to place this bet. Please add more tokens.', 'error')
                 return redirect(url_for('UserPage', username=user_id))
 
-    # In case of a wrong method or some issue, redirect to user page
     return redirect(url_for('UserPage', username=user_id))
 
 def fetch_user_bets(username):
@@ -388,5 +384,56 @@ def logout():
     # Clear the session
     session.pop('user_id', None)
     return redirect(url_for('index'))
+
+def get_match_results(match_id):
+    api_key = "YOUR_API_KEY"
+    url = f"https://api.the-odds-api.com/v4/sports/sport_key/events/{match_id}?apiKey={api_key}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    return None
+
+def determine_bet_result(match_data, team_bet_on):
+    winner = match_data.get('winner')
+    if winner:
+        return 'win' if winner == team_bet_on else 'lose'
+    return 'Pending'
+
+# Past bets page
+@app.route('/past_bets', methods=['GET'])
+def past_bets():
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("You must be logged in to view past bets.")
+        return redirect(url_for('login'))
+
+    with get_db_connection() as con:
+        bets = con.execute(
+            "SELECT matchID, team, amount, bet_status FROM Bets WHERE userID = (SELECT userID FROM Users WHERE username = ?)",
+            (user_id,)
+        ).fetchall()
+
+    bets_with_results = []
+    for bet in bets:
+        result = get_match_results(bet['matchID'])
+        if result:
+            bets_with_results.append({
+                'match': result.get('match_name', 'Unknown Match'),
+                'team': bet['team'],
+                'amount': bet['amount'],
+                'status': bet['bet_status'],
+                'result': determine_bet_result(result, bet['team'])
+            })
+        else:
+            bets_with_results.append({
+                'match': 'Unknown Match',
+                'team': bet['team'],
+                'amount': bet['amount'],
+                'status': bet['bet_status'],
+                'result': 'Pending'
+            })
+
+    return render_template('past_bets.html', bets=bets_with_results)
+
 if __name__ == '__main__':
     app.run(debug=True)
