@@ -11,6 +11,10 @@ function openBetModal(matchId, homeTeam, awayTeam, homeOdds, awayOdds) {
     document.getElementById('home-odds-field').value = homeOdds;  // Correctly populate the hidden input
     document.getElementById('away-odds-field').value = awayOdds;  // Correctly populate the hidden input
 
+    // Set the hidden inputs for home_team and away_team
+    document.getElementById('home-team').value = homeTeam;
+    document.getElementById('away-team').value = awayTeam;
+
     document.getElementById('team-select').innerHTML = `
         <option value="${homeTeam}">Home (${homeTeam})</option>
         <option value="${awayTeam}">Away (${awayTeam})</option>
@@ -20,6 +24,7 @@ function openBetModal(matchId, homeTeam, awayTeam, homeOdds, awayOdds) {
 
     document.getElementById('bet-modal').style.display = 'block';
 }
+
 function closeBetModal() {
     document.getElementById('bet-modal').style.display = 'none';
     document.getElementById('bet-modal-overlay').style.display = 'none';
@@ -102,18 +107,25 @@ function closeBetModal() {
     <input type="hidden" id="match-id" name="match_id">
     <input type="hidden" id="home-odds-field" name="home_odds">
     <input type="hidden" id="away-odds-field" name="away_odds">
+    <input type="hidden" id="home-team" name="home_team"> <!-- Hidden input for home team -->
+    <input type="hidden" id="away-team" name="away_team"> <!-- Hidden input for away team -->
+
     <label for="team-select">Choose Team:</label>
     <select id="team-select" name="team" required></select>
+
     <label for="amount">Bet Amount:</label>
     <input type="number" id="amount" name="amount" min="1" max="{{ user_balance }}" required>
+
     <div>
         <strong>Odds:</strong>
         <span id="home-odds"></span> (Home Team) /
         <span id="away-odds"></span> (Away Team)
     </div>
+
     <button type="submit">Confirm Bet</button>
     <button type="button" onclick="closeBetModal()">Cancel</button>
 </form>
+
 
 
     </div>
