@@ -1,6 +1,6 @@
 # BetBuddy
 
-A free to play sports gambling app where users can place bets using virtual currency 
+A free to play sports gambling app where users can place bets using virtual currency
 
 ![BetBuddy](static/images/image1.jpg)
 
@@ -12,7 +12,7 @@ Example screenshots for what to expect from this repository
 
 ![User Page](static/images/users.png)
 
-![Bet Table](static/images/bet_table.png)
+![Bet Table](static/images/bet_history.png)
 
 ## Installation:
 **To download the repository with `git`**
@@ -39,15 +39,15 @@ python app.py
 2. Download as ZIP:
    - In the dropdown menu, you will see several options. Click on **Download ZIP**.
 
-3. Save the ZIP File: 
-   - Your browser will start downloading the ZIP file. 
+3. Save the ZIP File:
+   - Your browser will start downloading the ZIP file.
    - Choose a location on your computer to save the file (like the Downloads folder) if prompted.
 
-4. Extract the ZIP File: 
+4. Extract the ZIP File:
    - Once the download is complete, navigate to the location where you saved the ZIP file.
    - Right-click on the ZIP file and select **Extract All** (or a similar option depending on your operating system) to unpack the files.
 
-5. Access the Repository Files: 
+5. Access the Repository Files:
    - After extracting, you will have a folder containing all the files from the repository. You can now navigate through the files as needed.
 
 ## Documentation
