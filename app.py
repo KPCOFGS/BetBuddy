@@ -28,9 +28,9 @@ def get_db_connection():
     con = sqlite3.connect('bettingBuddy.db', check_same_thread=False)
     con.row_factory = sqlite3.Row  # To access columns by name
     return con
-# Create tables if they don't exist
 def create_tables():
     with get_db_connection() as con:
+        # Create Users table
         con.execute('''
         CREATE TABLE IF NOT EXISTS Users (
             userID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,6 +42,8 @@ def create_tables():
             recovery_string TEXT UNIQUE
         );
         ''')
+
+        # Create Bets table without bet_status column initially
         con.execute('''
         CREATE TABLE IF NOT EXISTS Bets (
             betID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,6 +58,20 @@ def create_tables():
         );
         ''')
 
+        # Add the bet_status column if it doesn't already exist
+        try:
+            con.execute('ALTER TABLE Bets ADD COLUMN bet_status TEXT DEFAULT "open";')
+        except sqlite3.OperationalError:
+            # Column already exists
+            pass
+
+        # Create MatchResults table if it doesn't already exist
+        con.execute('''
+        CREATE TABLE IF NOT EXISTS MatchResults (
+            matchID TEXT PRIMARY KEY,
+            winning_team TEXT
+        );
+        ''')
 create_tables()
 # Opens the Home Screen HTML file for the user
 @app.route('/')
@@ -132,22 +148,21 @@ def loginprocess():
             error_message = 'Username or password is incorrect'
             return render_template('sign_in.html', error_message=error_message)  # Pass error message to the template
 
-# User Page Navigation
 @app.route('/user/<username>', methods=['GET'])
 def UserPage(username):
     category = request.args.get('category')
 
-    # Retrieve user's balance from the database
+    # Retrieve user's balance and bet history
     with get_db_connection() as con:
         cursor = con.cursor()
         cursor.execute("SELECT tokenAmnt FROM Users WHERE username = ?", (username,))
         result = cursor.fetchone()
-        if result:
-            user_balance = result['tokenAmnt']
-        else:
-            user_balance = 0  # Default to 0 if no balance is found
+        user_balance = result['tokenAmnt'] if result else 0
 
-    # Fetch sports data if the category is specified
+    user_bets = fetch_user_bets(username)  # Fetch user bets
+
+    # Fetch sports data if category is specified
+    sports_data = None
     if category not in session:
         sports_data = FetchSportsData(category)
         if sports_data:
@@ -155,8 +170,10 @@ def UserPage(username):
     else:
         sports_data = session[category]
 
-    # Pass user_balance and other data to the template
-    return render_template('user.html', username=username, user_balance=user_balance, data=sports_data)
+    return render_template(
+        'user.html', username=username, user_balance=user_balance, data=sports_data, user_bets=user_bets
+    )
+
 def FetchSportsData(category):
     # Define Parameters
     API_KEY = '668973ec82ed19bae55f0bd240052f2e'
@@ -206,7 +223,7 @@ def FetchSportsData(category):
                 # Grab commence time
                 match_date = event.get('commence_time')
                 if match_date:
-                    match_date = datetime.fromisoformat(match_date.replace('Z', '+00:00')).date()
+                    match_date = datetime.fromisoformat(match_date.replace('Z', '+00:00'))
                 # Add match data
                 matches.append({
                     'home_team': event['home_team'],
@@ -269,16 +286,20 @@ def reset_password(username):
         return redirect(url_for('login'))
 
     return render_template('display_user_info.html', username=username)
+import uuid
+
 @app.route('/place_bet', methods=['POST'])
 def place_bet():
     if request.method == 'POST':
         # Extract form data
         user_id = request.form['user_id']
-        match_id = request.form['match_id']
         team = request.form['team']  # Team selected by the user
         bet_amount = int(request.form['amount'])
         home_odds = float(request.form['home_odds'])  # Home odds
         away_odds = float(request.form['away_odds'])  # Away odds
+
+        # Create a unique match_id using UUID if it's not provided
+        match_id = str(uuid.uuid4())  # Generate a new unique match ID
 
         # Ensure the user has enough balance
         with get_db_connection() as con:
@@ -322,6 +343,12 @@ def place_bet():
 
     # In case of a wrong method or some issue, redirect to user page
     return redirect(url_for('UserPage', username=user_id))
+
+def fetch_user_bets(username):
+    with get_db_connection() as con:
+        cursor = con.cursor()
+        cursor.execute("SELECT * FROM Bets WHERE userID = (SELECT userID FROM Users WHERE username = ?)", (username,))
+        return cursor.fetchall()
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -298,6 +298,48 @@ h2 {
     background-color: #f8d7da; /* Light red background */
     color: #721c24; /* Dark red text */
 }
+/* Bet History Table */
+.bet-history {
+    width: 90%; /* Adjust width to fit well within the layout */
+    margin: 20px auto; /* Center the table */
+    border-collapse: collapse; /* Remove gaps between table cells */
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; /* Rounded corners */
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.bet-history th, .bet-history td {
+    padding: 10px 15px;
+    text-align: center;
+    border: 1px solid #ddd; /* Add subtle cell borders */
+    font-size: 1rem;
+}
+
+.bet-history th {
+    background-color: #4CAF50; /* Green header background */
+    color: white;
+    font-weight: bold;
+}
+
+.bet-history tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray background for even rows */
+}
+
+.bet-history tr:hover {
+    background-color: #f1f1f1; /* Highlight row on hover */
+}
+
+.bet-history td {
+    color: #333;
+}
+
+.no-bets-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
+    margin: 20px 0;
+}
 
 @media (max-width: 768px) {
     .sports_tabs ul {
