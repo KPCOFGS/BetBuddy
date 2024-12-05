@@ -38,7 +38,6 @@ def create_tables():
             lName TEXT,
             tokenAmnt INTEGER DEFAULT 1000,
             username TEXT UNIQUE,
-            email TEXT UNIQUE,
             password TEXT,
             recovery_string TEXT UNIQUE
         );
@@ -78,29 +77,22 @@ def signup():
 def signupprocess():
     if request.method == 'POST':
         username = request.form['username']
-        email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm-password']
         recovery_string = request.form['recovery_string']  # Get the recovery string from the form
 
         if password != confirm_password:
             flash('Passwords do not match. Please try again.', 'error')
-            return render_template('signup.html', username=username, email=email, recovery_string=recovery_string)
+            return render_template('signup.html', username=username, recovery_string=recovery_string)
 
         with get_db_connection() as con:
             cursor = con.cursor()
             cursor.execute("SELECT 1 FROM Users WHERE username = ?", (username,))
             user_exists = cursor.fetchone()
-            cursor.execute("SELECT 1 FROM Users WHERE email = ?", (email,))
-            email_exists = cursor.fetchone()
 
             if user_exists:
                 flash('Username already exists. Please choose a different one.', 'error')
-                return render_template('signup.html', username=username, email=email, recovery_string=recovery_string)
-
-            if email_exists:
-                flash('Email already exists. Please use a different email.', 'error')
-                return render_template('signup.html', username=username, email=email, recovery_string=recovery_string)
+                return render_template('signup.html', username=username, recovery_string=recovery_string)
 
             # If you want to regenerate the recovery string only if needed
             cursor.execute("SELECT 1 FROM Users WHERE recovery_string = ?", (recovery_string,))
@@ -111,7 +103,7 @@ def signupprocess():
             hashed_password = generate_password_hash(password)
 
             # Insert user with the recovery string
-            con.execute("INSERT INTO Users (username, email, password, tokenAmnt, recovery_string) VALUES (?, ?, ?, ?, ?)",(username, email, hashed_password, 1000, recovery_string))
+            con.execute("INSERT INTO Users (username, password, tokenAmnt, recovery_string) VALUES (?, ?, ?, ?)",(username, hashed_password, 1000, recovery_string))
 
         flash('Sign Up successful! Please log in.', 'success')
         return redirect(url_for('login'))
