@@ -36,12 +36,27 @@ def create_tables():
             userID INTEGER PRIMARY KEY AUTOINCREMENT,
             fName TEXT,
             lName TEXT,
-            tokenAmnt INTEGER,
+            tokenAmnt INTEGER DEFAULT 1000,
             username TEXT UNIQUE,
             email TEXT UNIQUE,
             password TEXT,
-            recovery_string TEXT UNIQUE  -- Add the recovery_string column
-        );''')
+            recovery_string TEXT UNIQUE
+        );
+        ''')
+        con.execute('''
+        CREATE TABLE IF NOT EXISTS Bets (
+            betID INTEGER PRIMARY KEY AUTOINCREMENT,
+            userID INTEGER,
+            matchID TEXT,
+            team TEXT,
+            amount INTEGER,
+            odds REAL,
+            potential_payout REAL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (userID) REFERENCES Users(userID)
+        );
+        ''')
+
 create_tables()
 # Opens the Home Screen HTML file for the user
 @app.route('/')
@@ -150,41 +165,27 @@ def UserPage(username):
 
     # Pass user_balance and other data to the template
     return render_template('user.html', username=username, user_balance=user_balance, data=sports_data)
-
-# Pulls data from the TheOdds Api
 def FetchSportsData(category):
-
     # Define Parameters
     API_KEY = '668973ec82ed19bae55f0bd240052f2e'
     BOOKMAKERS = 'draftkings'
     MARKETS = 'h2h'
     ODDS_FORMAT = 'american'
     DATE_FORMAT = 'iso'
-
-    available_sports = {
-        'NFL': 'americanfootball_nfl',
-        'NBA': 'basketball_nba',
-    }
-
-    SPORT = available_sports.get(category, None)
-
-    odds_response = requests.get(
-        f'https://api.the-odds-api.com/v4/sports/{SPORT}/odds',
-        params={
-            'api_key': API_KEY,
-            'bookmakers': BOOKMAKERS,
-            'markets': MARKETS,
-            'oddsFormat': ODDS_FORMAT,
-            'dateFormat': DATE_FORMAT,
-        }
-    )
-
-
+    NFL = 'americanfootball_nfl'
+    NBA = 'basketball_nba'
+    # Determine the sports category to fetch
+    if category == 'NFL':
+        sport = NFL
+    elif category == 'NBA':
+        sport = NBA
+    else:
+        return None
+    # Fetch odds data for the specified category
+    odds_response = requests.get(f'https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={API_KEY}&regions=us&markets={MARKETS},spreads&oddsFormat={ODDS_FORMAT}')
     # Return the JSON response if successful
     if odds_response.status_code == 200:
         data = odds_response.json()
-        print(data)
-
         current_date = datetime.utcnow().date()
         matches = []
         for event in data:
@@ -193,17 +194,14 @@ def FetchSportsData(category):
                 bookmakers = event.get('bookmakers', [])
                 if not bookmakers:
                     continue
-
                 # Validate markets
                 markets = bookmakers[0].get('markets', [])
                 if not markets:
                     continue
-
                 # Validate outcomes
                 outcomes = markets[0].get('outcomes', [])
                 if not outcomes:
                     continue
-
                 # Extract home and away prices
                 home_team_price = next(
                     (outcome['price'] for outcome in outcomes if outcome['name'] == event['home_team']), None
@@ -211,20 +209,12 @@ def FetchSportsData(category):
                 away_team_price = next(
                     (outcome['price'] for outcome in outcomes if outcome['name'] == event['away_team']), None
                 )
-
                 if home_team_price is None or away_team_price is None:
                     continue
-
                 # Grab commence time
                 match_date = event.get('commence_time')
                 if match_date:
-                   match_date = datetime.fromisoformat(match_date.replace('Z', '+00:00')).date()
-                   print('Match Date: ', match_date)
-                   print('Current Date: ', current_date)
-
-                #if match_date != current_date:
-                #    continue
-
+                    match_date = datetime.fromisoformat(match_date.replace('Z', '+00:00')).date()
                 # Add match data
                 matches.append({
                     'home_team': event['home_team'],
@@ -236,16 +226,10 @@ def FetchSportsData(category):
             except (KeyError, IndexError) as e:
                 print(f"Error processing event: {event}. Error: {e}")
                 continue
-
-        print(matches)
-        print('Remaining requests', odds_response.headers['x-requests-remaining'])
-        print('Used requests', odds_response.headers['x-requests-used'])
         return matches
     else:
-        # Handle errors if the API request fails
-        print(f"Error fetching data: {odds_response.status_code}")
-        return None
-
+        # Raise an exception if the API request fails
+        raise Exception(f"Error fetching data: {odds_response.status_code}")
 # Forget password page
 @app.route('/forget_password', methods=['GET', 'POST'])
 def forget_password():
@@ -293,7 +277,47 @@ def reset_password(username):
         return redirect(url_for('login'))
 
     return render_template('display_user_info.html', username=username)
+@app.route('/place_bet', methods=['POST'])
+def place_bet():
+    if request.method == 'POST':
+        # Extract form data
+        user_id = request.form['user_id']
+        match_id = request.form['match_id']
+        team = request.form['team']
+        bet_amount = int(request.form['amount'])
+        home_odds = float(request.form['home_odds'])  # Make sure to include home_odds in the HTML form data
+        away_odds = float(request.form['away_odds'])  # Same for away_odds
 
+        # Ensure the user has enough balance
+        with get_db_connection() as con:
+            cursor = con.cursor()
+            cursor.execute("SELECT tokenAmnt FROM Users WHERE username = ?", (user_id,))
+            user_balance = cursor.fetchone()
+
+            if user_balance and user_balance['tokenAmnt'] >= bet_amount:
+                # Calculate potential payout
+                potential_payout = bet_amount * (home_odds if team == "Home" else away_odds)
+
+                # Insert the bet into the Bets table
+                cursor.execute('''
+                    INSERT INTO Bets (userID, matchID, team, amount, odds, potential_payout)
+                    VALUES (
+                        (SELECT userID FROM Users WHERE username = ?),
+                        ?, ?, ?, ?, ?
+                    )''', (user_id, match_id, team, bet_amount, home_odds if team == "Home" else away_odds, potential_payout))
+
+                # Deduct the bet amount from the user's balance
+                cursor.execute("UPDATE Users SET tokenAmnt = tokenAmnt - ? WHERE username = ?", (bet_amount, user_id))
+                con.commit()
+
+                flash(f'Your bet has been placed! Potential Payout: ${potential_payout}', 'success')
+                return redirect(url_for('UserPage', username=user_id))
+            else:
+                flash('Insufficient funds to place this bet. Please add more tokens.', 'error')
+                return redirect(url_for('UserPage', username=user_id))
+
+    # In case of a wrong method or some issue, redirect to user page
+    return redirect(url_for('UserPage', username=user_id))
 
 if __name__ == '__main__':
     app.run(debug=True)
