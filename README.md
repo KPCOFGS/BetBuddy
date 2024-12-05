@@ -10,7 +10,9 @@ Example screenshots for what to expect from this repository
 
 ![Home Page](static/images/home_page.png)
 
-![User Page](static/images/user_page.png)
+![User Page](static/images/users.png)
+
+![Bet Table](static/images/bet_table.png)
 
 ## Installation:
 **To download the repository with `git`**
