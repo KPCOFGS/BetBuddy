@@ -13,13 +13,11 @@ from unicodedata import category
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import string
+import uuid
 
 # Function to generate a long random string
 def generate_recovery_string():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=64))
-
-
-
 app = Flask(__name__, static_folder='./static')
 # Generate a random secret key
 app.secret_key = secrets.token_urlsafe(32)
@@ -70,6 +68,13 @@ def create_tables():
         CREATE TABLE IF NOT EXISTS MatchResults (
             matchID TEXT PRIMARY KEY,
             winning_team TEXT
+        );
+        ''')
+        con.execute('''
+        CREATE TABLE IF NOT EXISTS UserLogins (
+            userID INTEGER PRIMARY KEY,
+            last_login DATE,
+            FOREIGN KEY (userID) REFERENCES Users(userID)
         );
         ''')
 create_tables()
@@ -136,18 +141,48 @@ def loginprocess():
         password = request.form['password']
 
         # Check if username exists in the database
-        cursor = get_db_connection().cursor()
-        cursor.execute("SELECT password FROM Users WHERE username = ?", (username,))
-        result = cursor.fetchone()
+        with get_db_connection() as con:
+            cursor = con.cursor()
+            cursor.execute("SELECT userID, password, tokenAmnt FROM Users WHERE username = ?", (username,))
+            user = cursor.fetchone()
 
-        if result and check_password_hash(result[0], password):
-            session['user_id'] = username  # Store username in session
-            return redirect(url_for('UserPage', username=username))  # Redirect to user page after successful login
-        else:
-            # Set an error message if login fails
-            error_message = 'Username or password is incorrect'
-            return render_template('sign_in.html', error_message=error_message)  # Pass error message to the template
+            if user and check_password_hash(user['password'], password):
+                user_id = user['userID']
+                session['user_id'] = username  # Store username in session
 
+                # Check last login date for daily reward
+                cursor.execute("SELECT last_login FROM UserLogins WHERE userID = ?", (user_id,))
+                reward_row = cursor.fetchone()
+
+                today_date = datetime.utcnow().date()
+                reward_message = None
+
+                if reward_row:
+                    last_login_date = datetime.strptime(reward_row['last_login'], "%Y-%m-%d").date()
+                    if last_login_date < today_date:  # New day login
+                        # Grant daily reward
+                        cursor.execute("UPDATE Users SET tokenAmnt = tokenAmnt + 500 WHERE userID = ?", (user_id,))
+                        cursor.execute("UPDATE UserLogins SET last_login = ? WHERE userID = ?", (today_date, user_id))
+                        reward_message = 'You have received your daily reward of 500 tokens!'
+                else:
+                    # First-time login or no record exists
+                    cursor.execute("INSERT INTO UserLogins (userID, last_login) VALUES (?, ?)", (user_id, today_date))
+                    cursor.execute("UPDATE Users SET tokenAmnt = tokenAmnt + 500 WHERE userID = ?", (user_id,))
+                    reward_message = 'You have received your daily reward of 500 tokens!'
+
+                con.commit()
+
+                # Redirect with appropriate message
+                if reward_message:
+                    flash(reward_message, 'success')
+                else:
+                    flash('Login successful!', 'success')
+
+                return redirect(url_for('UserPage', username=username))
+            else:
+                # Set an error message if login fails
+                error_message = 'Username or password is incorrect'
+                return render_template('sign_in.html', error_message=error_message)
 @app.route('/user/<username>', methods=['GET'])
 def UserPage(username):
     category = request.args.get('category')
@@ -286,7 +321,6 @@ def reset_password(username):
         return redirect(url_for('login'))
 
     return render_template('display_user_info.html', username=username)
-import uuid
 
 @app.route('/place_bet', methods=['POST'])
 def place_bet():
@@ -349,6 +383,10 @@ def fetch_user_bets(username):
         cursor = con.cursor()
         cursor.execute("SELECT * FROM Bets WHERE userID = (SELECT userID FROM Users WHERE username = ?)", (username,))
         return cursor.fetchall()
-
+@app.route('/logout', methods=['POST'])
+def logout():
+    # Clear the session
+    session.pop('user_id', None)
+    return redirect(url_for('index'))
 if __name__ == '__main__':
     app.run(debug=True)

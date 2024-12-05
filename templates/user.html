@@ -46,15 +46,18 @@
             <h1>Welcome, {{ username }}!</h1>
         </div>
     </header>
-
+        <div class="currency-row">
     <!-- Display User Balance -->
-    <div class="currency-row">
+
         <div class="currency-display">
             💰 Balance: ${{ user_balance }}
             {% if user_balance == 0 %}
                 <p class="insufficient-funds">Insufficient funds</p>
             {% endif %}
         </div>
+            <form action="{{ url_for('logout') }}" method="POST">
+        <button class="log-out-btn">Log Out</button>
+    </form>
     </div>
 
     <!-- Sports Categories -->
