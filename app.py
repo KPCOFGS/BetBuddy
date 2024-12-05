@@ -275,10 +275,10 @@ def place_bet():
         # Extract form data
         user_id = request.form['user_id']
         match_id = request.form['match_id']
-        team = request.form['team']
+        team = request.form['team']  # Team selected by the user
         bet_amount = int(request.form['amount'])
-        home_odds = float(request.form['home_odds'])  # Make sure to include home_odds in the HTML form data
-        away_odds = float(request.form['away_odds'])  # Same for away_odds
+        home_odds = float(request.form['home_odds'])  # Home odds
+        away_odds = float(request.form['away_odds'])  # Away odds
 
         # Ensure the user has enough balance
         with get_db_connection() as con:
@@ -287,8 +287,20 @@ def place_bet():
             user_balance = cursor.fetchone()
 
             if user_balance and user_balance['tokenAmnt'] >= bet_amount:
-                # Calculate potential payout
-                potential_payout = bet_amount * (home_odds if team == "Home" else away_odds)
+                # Determine the odds based on the selected team
+                if team == request.form['home_team']:  # If the user selected the home team
+                    odds = home_odds
+                elif team == request.form['away_team']:  # If the user selected the away team
+                    odds = away_odds
+                else:
+                    flash('Invalid team selection.', 'error')
+                    return redirect(url_for('UserPage', username=user_id))
+
+                # Calculate potential payout based on American odds
+                if odds > 0:  # Positive odds
+                    potential_payout = bet_amount * (odds / 100)
+                else:  # Negative odds
+                    potential_payout = bet_amount * (100 / abs(odds))
 
                 # Insert the bet into the Bets table
                 cursor.execute('''
@@ -296,13 +308,13 @@ def place_bet():
                     VALUES (
                         (SELECT userID FROM Users WHERE username = ?),
                         ?, ?, ?, ?, ?
-                    )''', (user_id, match_id, team, bet_amount, home_odds if team == "Home" else away_odds, potential_payout))
+                    )''', (user_id, match_id, team, bet_amount, odds, potential_payout))
 
                 # Deduct the bet amount from the user's balance
                 cursor.execute("UPDATE Users SET tokenAmnt = tokenAmnt - ? WHERE username = ?", (bet_amount, user_id))
                 con.commit()
 
-                flash(f'Your bet has been placed! Potential Payout: ${potential_payout}', 'success')
+                flash(f'Your bet has been placed! Potential Payout: ${potential_payout:.2f}', 'success')
                 return redirect(url_for('UserPage', username=user_id))
             else:
                 flash('Insufficient funds to place this bet. Please add more tokens.', 'error')
