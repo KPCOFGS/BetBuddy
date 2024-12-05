@@ -183,12 +183,129 @@ h2 {
     margin-bottom: 20px;
     color: #539AFC;
 }
+/* Bet Modal Overlay */
+#bet-modal-overlay {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 999;
+}
+
+/* Bet Modal Container */
+#bet-modal {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    z-index: 1000;
+}
+
+/* Modal Header */
+#bet-modal h3 {
+    font-size: 1.5rem;
+    color: #4CAF50; /* Matches header green */
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Form Styling in Modal */
+#bet-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Form Labels */
+#bet-modal label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Form Inputs */
+#bet-modal input, #bet-modal select {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+
+/* Odds Display */
+#bet-modal div {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: -10px;
+}
+
+/* Confirm and Cancel Buttons */
+#bet-modal button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#bet-modal button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#bet-modal button[type="submit"]:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+#bet-modal button[type="button"] {
+    background-color: #f44336; /* Red for cancel */
+    color: white;
+}
+
+#bet-modal button[type="button"]:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+}
+/* Flash Message Styling */
+.flash-message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.flash-message.success {
+    background-color: #d4edda; /* Light green background */
+    color: #155724; /* Dark green text */
+}
+
+.flash-message.error {
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24; /* Dark red text */
+}
 
 @media (max-width: 768px) {
     .sports_tabs ul {
         flex-direction: column;
     }
-
+    #bet-modal {
+        width: 95%;
+    }
     .sports_tabs li {
         margin: 10px 0;
     }
