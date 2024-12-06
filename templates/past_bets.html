@@ -29,7 +29,17 @@
                             <td>{{ bet.match }}</td>
                             <td>{{ bet.team }}</td>
                             <td>${{ bet.amount }}</td>
-                            <td>{{ bet.status }}</td>
+                            <td>
+                                {% if bet.status == "open" %}
+                                    <span class="pending">Pending</span>
+                                {% elif bet.status == "Hit" %}
+                                    <span class="win">Win</span>
+                                {% elif bet.status == "Lost" %}
+                                    <span class="lose">Lose</span>
+                                {% else %}
+                                    <span class="unknown">Unknown</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if bet.result == "win" %}
                                     <span class="win">Win</span>
