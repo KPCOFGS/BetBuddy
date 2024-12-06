@@ -48,3 +48,8 @@ table th {
     color: orange;
     font-weight: bold;
 }
+
+.unknown {
+    color: gray;
+    font-style: italic;
+}
