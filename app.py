@@ -17,12 +17,7 @@ import uuid
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from dotenv import load_dotenv
-import os
-load_dotenv()
 
-# Access the API key
-API_KEY = os.getenv('THEODDS_API_KEY')
 # Function to generate a long random string
 def generate_recovery_string():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=64))
@@ -388,15 +383,19 @@ def fetch_user_bets(username):
         return cursor.fetchall()
 @app.route('/logout', methods=['POST'])
 def logout():
+    # Clear the session
     session.pop('user_id', None)
     return redirect(url_for('index'))
 
 def get_match_results(match_id):
-    url = f"https://api.the-odds-api.com/v4/sports/sport_key/events/{match_id}?apiKey={API_KEY}"
+    api_key = "YOUR_API_KEY"
+    url = f"https://api.the-odds-api.com/v4/sports/sport_key/events/{match_id}?apiKey={api_key}"
     response = requests.get(url)
     if response.status_code == 200:
-        return response.json()
-    print(f"API Error: {response.status_code}, Response: {response.text}")
+        match_data = response.json()
+        # Extract winner based on TheOddsAPI response structure
+        winning_team = match_data.get('outcomes', {}).get('winner')
+        return {'match_name': match_data.get('name'), 'winner': winning_team}
     return None
 
 def determine_bet_result(match_data, team_bet_on):
@@ -413,13 +412,15 @@ def past_bets():
         return redirect(url_for('login'))
 
     with get_db_connection() as con:
+        # Fetch pending bets
         pending_bets = con.execute(
             "SELECT betID, matchID, team FROM Bets WHERE userID = (SELECT userID FROM Users WHERE username = ?) AND bet_status = 'open'",
             (user_id,)
         ).fetchall()
 
+        # Check results for pending bets
         for bet in pending_bets:
-            result = get_match_results(bet['matchID'])
+            result = get_match_results(bet['matchID'])  # Fetch match result from API
             if result:
                 winner = result.get('winner')
                 if winner:
@@ -428,6 +429,7 @@ def past_bets():
                         "UPDATE Bets SET bet_status = ? WHERE betID = ?", (bet_status, bet['betID'])
                     )
 
+        # Fetch all bets to display, now updated
         all_bets = con.execute(
             "SELECT matchID, team, amount, bet_status FROM Bets WHERE userID = (SELECT userID FROM Users WHERE username = ?)",
             (user_id,)
@@ -467,7 +469,7 @@ def update_pending_bets():
                     con.execute("UPDATE Bets SET bet_status = ? WHERE betID = ?", (bet_status, bet['betID']))
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_pending_bets, 'interval', minutes=30)
+scheduler.add_job(update_pending_bets, 'interval', minutes=30)  # Check every 30 minutes
 scheduler.start()
 
 
