@@ -21,6 +21,9 @@
             document.getElementById('home-odds').textContent = homeOdds;
             document.getElementById('away-odds').textContent = awayOdds;
 
+            // Set the hidden id field
+            document.getElementById('match-id-hidden').value = matchId;
+
             document.getElementById('bet-modal').style.display = 'block';
         }
 
@@ -46,31 +49,26 @@
             <h1>Welcome, {{ username }}!</h1>
         </div>
     </header>
-        <div class="currency-row">
-    <!-- Display User Balance -->
-
+    <div class="currency-row">
         <div class="currency-display">
             💰 Balance: ${{ user_balance }}
             {% if user_balance == 0 %}
                 <p class="insufficient-funds">Insufficient funds</p>
             {% endif %}
         </div>
-            <form action="{{ url_for('logout') }}" method="POST">
-        <button class="log-out-btn">Log Out</button>
-    </form>
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button class="log-out-btn">Log Out</button>
+        </form>
     </div>
 
-    <!-- Sports Categories -->
     <div class="sports_tabs">
         <ul>
             <li><a href="{{ url_for('UserPage', username=username, category='NFL') }}" class="{{ 'active' if request.args.get('category') == 'NFL' else '' }}">NFL</a></li>
             <li><a href="{{ url_for('UserPage', username=username, category='NBA') }}" class="{{ 'active' if request.args.get('category') == 'NBA' else '' }}">NBA</a></li>
         </ul>
         <a href="{{ url_for('past_bets') }}">View Past Bets</a>
-
     </div>
 
-    <!-- Display Matches -->
     <div>
         <h2>Available Sports Matches</h2>
         {% if request.args.get('category') %}
@@ -85,7 +83,7 @@
                             </div>
                             <div class="date">Match Date: {{ event.match_date }}</div>
 
-                            <button class="bet-toggle" onclick="openBetModal('{{ event.match_id }}', '{{ event.home_team }}', '{{ event.away_team }}', '{{ event.home_team_price }}', '{{ event.away_team_price }}')">
+                            <button class="bet-toggle" onclick="openBetModal('{{ event.id }}', '{{ event.home_team }}', '{{ event.away_team }}', '{{ event.home_team_price }}', '{{ event.away_team_price }}')">
                                 Place Bet
                             </button>
                         </div>
@@ -99,44 +97,41 @@
         {% endif %}
     </div>
 
-    <!-- Bet History Section -->
-<div>
-    <h2>Your Bet History</h2>
-    {% if user_bets %}
-        <table class="bet-history">
-            <thead>
-                <tr>
-                    <th>Record ID</th>
-                    <th>Team</th>
-                    <th>Bet Amount</th>
-                    <th>Status</th>
-                    <th>Potential Payout</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for bet in user_bets %}
-                <tr>
-                    <td>{{ bet['matchID'] }}</td>
-                    <td>{{ bet['team'] }}</td>
-                    <td>${{ bet['amount'] }}</td>
-                    <td>{{ bet['bet_status'] }}</td>
-                    <td>${{ bet['potential_payout'] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p class="no-bets-message">No bets placed yet.</p>
-    {% endif %}
-</div>
+    <div>
+        <h2>Your Bet History</h2>
+        {% if user_bets %}
+            <table class="bet-history">
+                <thead>
+                    <tr>
+                        <th>Team</th>
+                        <th>Bet Amount</th>
+                        <th>Status</th>
+                        <th>Potential Payout</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bet in user_bets %}
+                    <tr>
+                        <td>{{ bet['team'] }}</td>
+                        <td>${{ bet['amount'] }}</td>
+                        <td>{{ bet['bet_status'] }}</td>
+                        <td>${{ bet['potential_payout'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-bets-message">No bets placed yet.</p>
+        {% endif %}
+    </div>
 
-    <!-- Bet Modal -->
     <div id="bet-modal-overlay" onclick="closeBetModal()"></div>
     <div id="bet-modal">
         <h3>Place Your Bet</h3>
         <form action="/place_bet?category={{ request.args.get('category') }}" method="post">
             <input type="hidden" name="user_id" value="{{ username }}">
             <input type="hidden" id="match-id" name="match_id">
+            <input type="hidden" id="match-id-hidden" name="id"> <!-- Hidden ID Field -->
             <input type="hidden" id="home-odds-field" name="home_odds">
             <input type="hidden" id="away-odds-field" name="away_odds">
             <input type="hidden" id="home-team" name="home_team">

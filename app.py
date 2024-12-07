@@ -13,11 +13,14 @@ from unicodedata import category
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import string
-import uuid
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
+with open("API.txt", "r") as file:
+    YOUR_API = file.readline().strip()  # Read the first line and remove any trailing whitespace or newline
 
+NFL = 'americanfootball_nfl'
+NBA = 'basketball_nba'
 # Function to generate a long random string
 def generate_recovery_string():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=64))
@@ -81,6 +84,56 @@ def create_tables():
         );
         ''')
 create_tables()
+def FetchScoresData(NFL=NFL, NBA=NBA):
+    # Initialize an empty list to store results for each sport
+    all_game_winners = []
+
+    # Loop through the provided categories (NFL, NBA)
+    for category in (NFL, NBA):
+        # Fetch odds data for the specified category
+        odds_response = requests.get(f'https://api.the-odds-api.com/v4/sports/{category}/scores/?daysFrom=3&apiKey={YOUR_API}')
+
+        # Check if the response was successful
+        if odds_response.status_code == 200:
+            data = odds_response.json()  # Assuming the data comes as JSON
+
+            # Iterate through each game in the response
+            for game in data:
+                # Filter only completed games
+                if not game.get('completed', False):
+                    continue
+
+                matchID = game.get('id')
+                scores = game.get('scores', [])
+
+                # Ensure scores data is present
+                if scores and len(scores) == 2:
+                    # Unpack scores
+                    team1, team2 = scores[0], scores[1]
+                    team1_name, team1_score = team1.get('name'), int(team1.get('score', 0))
+                    team2_name, team2_score = team2.get('name'), int(team2.get('score', 0))
+
+                    # Determine winner
+                    if team1_score > team2_score:
+                        winner = team1_name
+                    elif team2_score > team1_score:
+                        winner = team2_name
+                    else:
+                        winner = "Tie"
+
+                    insert_match_result(matchID, winner)
+
+                    # Append game result
+                    all_game_winners.append({
+                        'matchID': matchID,
+                        'winner': winner
+                    })
+        else:
+            # Raise an exception if the API request fails
+            raise Exception(f"Error fetching data for {category}: {odds_response.status_code}")
+
+    return all_game_winners
+
 # Opens the Home Screen HTML file for the user
 @app.route('/')
 def index():
@@ -188,6 +241,10 @@ def loginprocess():
                 return render_template('sign_in.html', error_message=error_message)
 @app.route('/user/<username>', methods=['GET'])
 def UserPage(username):
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("You must log in first.")
+        return redirect(url_for('login'))
     category = request.args.get('category')
 
     # Retrieve user's balance and bet history
@@ -212,15 +269,11 @@ def UserPage(username):
         'user.html', username=username, user_balance=user_balance, data=sports_data, user_bets=user_bets
     )
 
-def FetchSportsData(category):
-    # Define Parameters
-    API_KEY = '668973ec82ed19bae55f0bd240052f2e'
+def FetchSportsData(category, NFL=NFL, NBA=NBA):
     BOOKMAKERS = 'draftkings'
     MARKETS = 'h2h'
     ODDS_FORMAT = 'american'
     DATE_FORMAT = 'iso'
-    NFL = 'americanfootball_nfl'
-    NBA = 'basketball_nba'
     # Determine the sports category to fetch
     if category == 'NFL':
         sport = NFL
@@ -229,7 +282,7 @@ def FetchSportsData(category):
     else:
         return None
     # Fetch odds data for the specified category
-    odds_response = requests.get(f'https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={API_KEY}&regions=us&markets={MARKETS},spreads&oddsFormat={ODDS_FORMAT}')
+    odds_response = requests.get(f'https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={YOUR_API}&regions=us&markets={MARKETS},spreads&oddsFormat={ODDS_FORMAT}')
     # Return the JSON response if successful
     if odds_response.status_code == 200:
         data = odds_response.json()
@@ -264,6 +317,7 @@ def FetchSportsData(category):
                     match_date = datetime.fromisoformat(match_date.replace('Z', '+00:00'))
                 # Add match data
                 matches.append({
+                    'id': event['id'],  # Fetch and store the match ID
                     'home_team': event['home_team'],
                     'away_team': event['away_team'],
                     'match_date': match_date,
@@ -335,8 +389,7 @@ def place_bet():
         home_odds = float(request.form['home_odds'])  # Home odds
         away_odds = float(request.form['away_odds'])  # Away odds
 
-        # Create a unique match_id using UUID if it's not provided
-        match_id = str(uuid.uuid4())  # Generate a new unique match ID
+        match_id = request.form['id']
 
         # Ensure the user has enough balance
         with get_db_connection() as con:
@@ -375,7 +428,18 @@ def place_bet():
                 return redirect(url_for('UserPage', username=user_id))
 
     return redirect(url_for('UserPage', username=user_id))
+def insert_match_result(match_id, winner_team):
+    with get_db_connection() as con:
+        cursor = con.cursor()
+        cursor.execute('SELECT COUNT(*) FROM MatchResults WHERE matchID = ?', (match_id,))
+        result = cursor.fetchone()
 
+        if result[0] == 0:  # If no record exists with the given match_id
+            con.execute('''
+                INSERT INTO MatchResults (matchID, winning_team)
+                VALUES (?, ?);
+            ''', (match_id, winner_team))
+            con.commit()
 def fetch_user_bets(username):
     with get_db_connection() as con:
         cursor = con.cursor()
@@ -388,8 +452,7 @@ def logout():
     return redirect(url_for('index'))
 
 def get_match_results(match_id):
-    api_key = "YOUR_API_KEY"
-    url = f"https://api.the-odds-api.com/v4/sports/sport_key/events/{match_id}?apiKey={api_key}"
+    url = f"https://api.the-odds-api.com/v4/sports/sport_key/events/{match_id}?apiKey={YOUR_API}"
     response = requests.get(url)
     if response.status_code == 200:
         match_data = response.json()
@@ -471,7 +534,7 @@ def update_pending_bets():
 scheduler = BackgroundScheduler()
 scheduler.add_job(update_pending_bets, 'interval', minutes=30)  # Check every 30 minutes
 scheduler.start()
-
+FetchScoresData()
 
 if __name__ == '__main__':
     app.run(debug=True)
