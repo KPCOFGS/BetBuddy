@@ -14,8 +14,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import string
 
-from apscheduler.schedulers.background import BackgroundScheduler
-
 with open("API.txt", "r") as file:
     YOUR_API = file.readline().strip()  # Read the first line and remove any trailing whitespace or newline
 
@@ -304,7 +302,9 @@ def UserPage(username):
             session[category] = sports_data
     else:
         sports_data = session[category]
-
+    FetchScoresData()
+    FetchAllData()
+    update_user_tokens_for_bets()
     return render_template(
         'user.html', username=username, user_balance=user_balance, data=sports_data, user_bets=user_bets
     )
@@ -633,10 +633,6 @@ def update_user_tokens_for_bets():
                     ''', (betID,))
                     # Commit the changes
                     con.commit()
-# Call the function
-scheduler = BackgroundScheduler()
-scheduler.add_job(update_pending_bets, 'interval', minutes=30)  # Check every 30 minutes
-scheduler.start()
 FetchScoresData()
 FetchAllData()
 update_user_tokens_for_bets()
