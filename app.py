@@ -83,6 +83,11 @@ def create_tables():
             FOREIGN KEY (userID) REFERENCES Users(userID)
         );
         ''')
+        con.execute('''
+        CREATE TABLE IF NOT EXISTS AllMatches (
+            matchID TEXT PRIMARY KEY
+        );
+        ''')
 create_tables()
 def FetchScoresData(NFL=NFL, NBA=NBA):
     # Initialize an empty list to store results for each sport
@@ -133,7 +138,42 @@ def FetchScoresData(NFL=NFL, NBA=NBA):
             raise Exception(f"Error fetching data for {category}: {odds_response.status_code}")
 
     return all_game_winners
+def FetchAllData(NFL=NFL, NBA=NBA):
+    # Initialize an empty list to store results for each sport
+    all_match = []
 
+    # Loop through the provided categories (NFL, NBA)
+    for category in (NFL, NBA):
+        # Fetch odds data for the specified category
+        odds_response = requests.get(f'https://api.the-odds-api.com/v4/sports/{category}/scores/?daysFrom=3&apiKey={YOUR_API}')
+
+        # Check if the response was successful
+        if odds_response.status_code == 200:
+            data = odds_response.json()  # Assuming the data comes as JSON
+
+            # Iterate through each game in the response
+            for game in data:
+                matchID = game.get('id')
+                with get_db_connection() as con:
+                    cursor = con.cursor()
+                    cursor.execute('SELECT COUNT(*) FROM AllMatches WHERE matchID = ?', (matchID,))
+                    result = cursor.fetchone()
+
+                    if result[0] == 0:  # If no record exists with the given match_id
+                        con.execute('''
+                            INSERT INTO AllMatches (matchID)
+                            VALUES (?);
+                        ''', (matchID,))  # Ensure matchID is passed as a tuple with one element
+                        con.commit()
+                # Append game result
+                all_match.append({
+                    'matchID': matchID,
+                })
+        else:
+            # Raise an exception if the API request fails
+            raise Exception(f"Error fetching data for {category}: {odds_response.status_code}")
+
+    return all_match
 # Opens the Home Screen HTML file for the user
 @app.route('/')
 def index():
@@ -531,10 +571,74 @@ def update_pending_bets():
                     bet_status = 'Hit' if winner == bet['team'] else 'Lost'
                     con.execute("UPDATE Bets SET bet_status = ? WHERE betID = ?", (bet_status, bet['betID']))
 
+def update_user_tokens_for_bets():
+    with get_db_connection() as con:
+        cursor = con.cursor()
+
+        # Get all matchIDs from the Bets table
+        cursor.execute('SELECT betID, userID, matchID, potential_payout FROM Bets WHERE bet_status = "open"')
+        bets = cursor.fetchall()
+
+        # Get all matchIDs from the MatchResults table
+        cursor.execute('SELECT matchID FROM MatchResults')
+        match_results_ids = cursor.fetchall()
+
+        # Get all matchIDs from the AllMatches table
+        cursor.execute('SELECT matchID FROM AllMatches')
+        all_matches_ids = cursor.fetchall()
+
+        # Convert match_results_ids and all_matches_ids to sets for faster lookup
+        match_results_set = {result[0] for result in match_results_ids}
+        all_matches_set = {result[0] for result in all_matches_ids}
+
+        # Iterate through each bet and check for conditions
+        for bet in bets:
+            betID, userID, bet_matchID, potential_payout = bet
+
+            # Check if the matchID exists in MatchResults
+            if bet_matchID in match_results_set:
+                # If the matchID exists in MatchResults, update the user's tokenAmnt
+                cursor.execute('''
+                    UPDATE Users
+                    SET tokenAmnt = tokenAmnt + ?
+                    WHERE userID = ?
+                ''', (potential_payout, userID))
+
+                # Update the bet_status to "closed" after processing the bet
+                cursor.execute('''
+                    UPDATE Bets
+                    SET bet_status = "closed"
+                    WHERE betID = ?
+                ''', (betID,))
+
+                # Remove the bet from the Bets table
+                cursor.execute('''
+                    DELETE FROM Bets
+                    WHERE betID = ?
+                ''', (betID,))
+
+                # Commit the changes
+                con.commit()
+
+            # If matchID does not exist in MatchResults, check in AllMatches table
+            elif bet_matchID not in match_results_set:
+                if bet_matchID in all_matches_set:
+                    # Do nothing if the matchID exists in AllMatches
+                    continue
+                else:
+                    # Delete the bet if the matchID does not exist in AllMatches
+                    cursor.execute('''
+                        DELETE FROM Bets
+                        WHERE betID = ?
+                    ''', (betID,))
+                    # Commit the changes
+                    con.commit()
+# Call the function
 scheduler = BackgroundScheduler()
 scheduler.add_job(update_pending_bets, 'interval', minutes=30)  # Check every 30 minutes
 scheduler.start()
 FetchScoresData()
-
+FetchAllData()
+update_user_tokens_for_bets()
 if __name__ == '__main__':
     app.run(debug=True)
