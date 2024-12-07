@@ -10,7 +10,7 @@ def insert_test_data():
     test_data = (
         999,  # userID
         1,  # userID (foreign key to Users)
-        'e0b1a11b515324fa603bb16ff278dcbf',  # matchID
+        'wwdewa',  # matchID
         'Minnesota Vikings',  # team
         1,  # amount
         -250.0,  # odds
