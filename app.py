@@ -297,6 +297,7 @@ def UserPage(username):
     else:
         sports_data = session[category]
     FetchScoresData()
+    FetchAllData()
     update_user_tokens_for_bets()
     return render_template(
         'user.html', username=username, user_balance=user_balance, data=sports_data, user_bets=user_bets
@@ -545,8 +546,5 @@ def update_user_tokens_for_bets():
                     ''', (betID,))
                     # Commit the changes
                     con.commit()
-FetchScoresData()
-FetchAllData()
-update_user_tokens_for_bets()
 if __name__ == '__main__':
     app.run(debug=True)
