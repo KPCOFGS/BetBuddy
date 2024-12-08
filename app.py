@@ -1,15 +1,9 @@
 import sqlite3
-from asyncio import current_task
-from operator import ifloordiv
-from zoneinfo import available_timezones
-
-import pandas as pd
 import requests
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 import secrets
 from datetime import datetime
 
-from unicodedata import category
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import string
