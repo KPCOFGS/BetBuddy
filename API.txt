@@ -1,12 +1,1 @@
-676dad172b631f7293525e96e1ec921b
-    if category == 'TEST':
-        now = datetime.now().replace(hour=14, minute=58, second=0, microsecond=0)
-        simulated_match = [{
-            'home_team': 'Team Alpha',
-            'away_team': 'Team Beta',
-            'match_date': now,  # Match expires in 1 minute
-            'home_team_price': -110,  # Example odds
-            'away_team_price': +120,  # Example odds
-        }]
-        return simulated_match
-    # Define Parameters
+668973ec82ed19bae55f0bd240052f2e
