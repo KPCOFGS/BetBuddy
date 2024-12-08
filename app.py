@@ -297,7 +297,6 @@ def UserPage(username):
     else:
         sports_data = session[category]
     FetchScoresData()
-    FetchAllData()
     update_user_tokens_for_bets()
     return render_template(
         'user.html', username=username, user_balance=user_balance, data=sports_data, user_bets=user_bets
