@@ -5,34 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
-    <script>
-        function openBetModal(matchId, homeTeam, awayTeam, homeOdds, awayOdds) {
-            document.getElementById('match-id').value = matchId;
-            document.getElementById('home-odds-field').value = homeOdds;
-            document.getElementById('away-odds-field').value = awayOdds;
-
-            document.getElementById('home-team').value = homeTeam;
-            document.getElementById('away-team').value = awayTeam;
-
-            document.getElementById('team-select').innerHTML = `
-                <option value="${homeTeam}">Home (${homeTeam})</option>
-                <option value="${awayTeam}">Away (${awayTeam})</option>
-            `;
-            document.getElementById('home-odds').textContent = homeOdds;
-            document.getElementById('away-odds').textContent = awayOdds;
-
-            // Set the hidden id field
-            document.getElementById('match-id-hidden').value = matchId;
-
-            document.getElementById('bet-modal').style.display = 'block';
-        }
-
-        function closeBetModal() {
-            document.getElementById('bet-modal').style.display = 'none';
-            document.getElementById('bet-modal-overlay').style.display = 'none';
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/user.js') }}"></script>
 </head>
+
 
 <body>
     {% with messages = get_flashed_messages(with_categories=true) %}
