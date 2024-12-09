@@ -546,5 +546,9 @@ def update_user_tokens_for_bets():
                     ''', (betID,))
                     # Commit the changes
                     con.commit()
+@app.route('/oddHelp')
+def oddHelp():
+    return render_template('help.html')
+    
 if __name__ == '__main__':
     app.run(debug=True)
