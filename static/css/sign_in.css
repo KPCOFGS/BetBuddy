@@ -14,6 +14,31 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
+
+header {
+    background: #f4f4f4;
+    color: #000;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    margin: 0;
+    font-size: 2em;
+    color: #4CAF50;
+}
+.container {
+    flex: 1; /* Allows the container to grow and take up available space */
+    max-width: 400px; /* Increase the maximum width */
+    width: 100%; /* Ensure it takes full width up to the max-width */
+    margin: 20px auto; /* Center the container */
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
 h2 {
     margin-bottom: 20px;
 }
@@ -71,4 +96,3 @@ button:hover {
     margin-bottom: 20px;
     border-radius: 5px;
 }
-
