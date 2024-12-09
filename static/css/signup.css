@@ -14,8 +14,8 @@ body {
 }
 
 header {
-    background: #007BFF;
-    color: #fff;
+    background: #f4f4f4;
+    color: #000;
     padding: 15px 20px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -24,6 +24,7 @@ header {
 h1 {
     margin: 0;
     font-size: 2em;
+    color: #4CAF50;
 }
 .container {
     flex: 1; /* Allows the container to grow and take up available space */
@@ -40,7 +41,7 @@ h1 {
 h2 {
     text-align: center;
     margin-bottom: 20px;
-    color: #007BFF;
+    /*color: #007BFF;*/
 }
 
 .form-group {
@@ -65,7 +66,7 @@ input[type="password"] {
 button {
     width: 100%;
     padding: 10px;
-    background: #007BFF;
+    background: #4CAF50;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -74,7 +75,7 @@ button {
 }
 
 button:hover {
-    background: #0056b3;
+    background: #4CAF50;
 }
 
 p {
@@ -135,5 +136,5 @@ footer a:hover {
 
 .recovery-section p {
     font-weight: bold;
-    color: #007BFF;
+    /*color: #007BFF;*/
 }
