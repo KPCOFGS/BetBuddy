@@ -36,7 +36,7 @@ input[type="password"] {
     box-sizing: border-box;
 }
 button {
-    background-color: #007bff;
+    background-color: #4CAF50;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -45,11 +45,11 @@ button {
     margin-right: 10px;
 }
 button.back-btn {
-    background-color: #007bff;
+    background-color: #4CAF50;
     color: #fff;
 }
 button:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
 }
 
 .alert {
