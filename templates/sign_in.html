@@ -8,6 +8,20 @@
 </head>
 <body>
     <div class="container">
+
+        <!-- Pop Up -->
+        <div id="modal" class="modal">
+                <div class="modal-content">
+                        <span class="close-btn" id="closeModal">&times;</span>
+                        <h2>Welcome to BetBuddy!</h2>
+                        <p>Make sure to retrieve your virtual money after the game concludes!</p>
+                        <p><strong>Note:</strong> Virtual money will automatically be removed <strong>3 days</strong> after the game e$
+                        <p>Thank you for understanding, and enjoy using <strong>BetBuddy</strong>!</p>
+                </div>
+        </div>
+
+        <!-- Header -->
+        
         <header>
             <h1>BetBuddy</h1>
         </header>
@@ -52,5 +66,7 @@
             <p>Don't have an account? <a href="{{ url_for('signup') }}">Create yours now</a></p>
         </div>
     </div>
+
+    <script src="{{ url_for('static', filename='js/sign_in.js') }}"></script>
 </body>
 </html>
