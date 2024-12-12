@@ -169,7 +169,8 @@ def FetchAllData(NFL=NFL, NBA=NBA):
 # Opens the Home Screen HTML file for the user
 @app.route('/')
 def index():
-    clear_session()
+    if not session.get('user_id'):
+        clear_session()
     return render_template('home.html')
 # Define a function to clear the session
 def clear_session():

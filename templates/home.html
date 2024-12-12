@@ -11,7 +11,12 @@
     <header>
         <h1>BetBuddy</h1>
         <button id="theme-toggle" class="sign-in-btn">Toggle Dark Mode</button>
-        <a id="sign-in" class="sign-in-btn" href="{{ url_for('login') }}">Sign In</a>
+        
+        {% if session.get('user_id') %}
+            <button onclick="window.location.href='/user/{{ session['user_id'] }}'" class="user-btn">User Page</button>
+        {% else %}
+            <a id="sign-in" class="sign-in-btn" href="{{ url_for('login') }}">Sign In</a>
+        {% endif %}
     </header>
 
     <div class="container">

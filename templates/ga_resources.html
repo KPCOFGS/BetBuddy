@@ -12,7 +12,12 @@
         <button onclick="window.location.href='/'" class="back-btn">Back</button>
 
         <button id="theme-toggle" class="sign-in-btn">Toggle Dark Mode</button>
-        <h1></h1>
+
+        {% if session.get('user_id') %}
+            <button onclick="window.location.href='/user/{{ session['user_id'] }}'" class="user-btn">User Page</button>
+        {% else %}
+            <a id="sign-in" class="sign-in-btn" href="{{ url_for('login') }}">Sign In</a>
+        {% endif %}
     </header>
 
     <div class="container">
