@@ -53,7 +53,7 @@ python app.py
 
 **This repository uses The Odd API. To use your own The Odd API, follow the steps below:**
 1. Navigate to [The Odd API official website](https://the-odds-api.com/)
-2. Click the blue button that sats `Get API Key ->`
+2. Click the blue button that shows `Get API Key ->`
 3. Click the blue `Start` button under `FREE` subscription
 4. Fill the blank for `First Name` and `Email`, and do the CAPTCHA
 5. Click `Subscribe`
