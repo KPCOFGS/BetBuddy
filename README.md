@@ -49,6 +49,16 @@ python app.py
 
 5. Access the Repository Files:
    - After extracting, you will have a folder containing all the files from the repository. You can now navigate through the files as needed.
+## Use Your Own API
+
+**This repository uses The Odd API, to use your own The Odd API, follow the steps below:**
+1. Navigate to [The Odd API official website](https://the-odds-api.com/)
+2. Click the blue button that sats `Get API Key ->`
+3. Click the blue `Start` button under `FREE` subscription
+4. Fill the blank for `First Name` and `Email`, and do the CAPTCHA
+5. Click `Subscribe`
+6. Check your email for the API key
+7. Lastly, replace your API key with the one in `API.txt` file
 
 ## Documentation
 * For Software Requirements, Progress Report or any other documents, please visit [docs](docs/) folder
