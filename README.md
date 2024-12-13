@@ -60,6 +60,12 @@ python app.py
 6. Check your email for the API key
 7. Lastly, replace your API key with the one in `API.txt` file
 
+## Helper Scripts
+
+* Two helper scripts are provided in this repository: [print_table.py](print_table.py) and [test_bet.py](test_bet.py)
+* `print_table.py` prints tables in the database. It includes useful information such as game ID of completed games, games that users placed bets on, future games, etc...
+* `test_bet.py` tests the bet functions to ensure it works properly. It takes in a parameter `<game ID>`, which will inject a bet of the corresponding game to the **first user** registered in the database.
+* `test_bet.py` is useful when injecting a non-existent game ID to test if the system will detect it and remove it. Or injecting a completed game ID and test the reward system. It can also accept an expired game ID and test if the system is able to remove it from user's data table as well.
 ## Documentation
 * For Software Requirements, Progress Report or any other documents, please visit [docs](docs/) folder
 ## License
