@@ -140,3 +140,24 @@ footer.dark {
     outline: none;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
+.user-btn {
+    background-color: #4CAF50; /* Green background for the button */
+    color: #fff; /* White text */
+    padding: 10px 20px; /* Padding for comfortable clickability */
+    border: none; /* No border */
+    border-radius: 5px; /* Smooth edges */
+    font-size: 16px; /* Readable font size */
+    font-weight: bold; /* Bold text for emphasis */
+    cursor: pointer; /* Pointer cursor to indicate interactivity */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+.user-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+    color: #fff; /* Ensure text remains visible */
+}
+
+.user-btn:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Highlighted border */
+}
